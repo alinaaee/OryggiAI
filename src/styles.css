@@ -1,1 +1,33 @@
 /* You can add global styles to this file, and also import other style files */
+
+@font-face { font-family: DMSans-Medium; src: url('/assets/fonts/DMSans-Medium.ttf'); }
+@font-face { font-family: NeueMachina-Light; src: url('/assets/fonts/NeueMachina-Light.otf'); }
+@font-face { font-family: NeueMachina-Regular; src: url('assets/fonts/NeueMachina-Regular.otf'); }
+@font-face { font-family: NeueMachina-Ultrabold; src: url('assets/fonts/NeueMachina-Ultrabold.otf'); }
+
+
+h1,h2,h3,h4,h5,h6{
+    font-family: 'NeueMachina-Light' !important;
+}
+
+h1,h2,h3,h4,h5{
+    &.fontSans{
+        font-family: 'DMSans-Medium' !important;}
+}
+
+h1,h2,h3,h4,h5,p,span{
+    &.fontSansBold{
+        font-family: 'NeueMachina-Ultrabold' !important;}
+}
+
+p,span {
+    &.font{
+        font-family: 'NeueMachina-Light' !important;
+    }
+}
+
+p,span {
+    &.fontL{
+        font-family: 'NeueMachina-Regular' !important;
+    }
+}
