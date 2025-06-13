@@ -1,0 +1,74 @@
+<div class="auth-container">
+  <div class="tab-switcher">
+    <button [class.active]="mode === 'login'"   (click)="mode = 'login'">Login</button>
+    <button [class.active]="mode === 'signup'"  (click)="mode = 'signup'">Signup</button>
+  </div>
+
+  <!-- LOGIN FORM -->
+  <form *ngIf="mode === 'login'" (ngSubmit)="login()" #loginForm="ngForm" class="form-box">
+    <input
+      type="email"
+      placeholder="Email Address"
+      required
+      [(ngModel)]="loginEmail"
+      name="loginEmail"
+    />
+    <input
+      type="password"
+      placeholder="Password"
+      required
+      [(ngModel)]="loginPassword"
+      name="loginPassword"
+    />
+    <button type="submit" [disabled]="!loginForm.form.valid">Login</button>
+    <p *ngIf="loginMessage" class="message">{{ loginMessage }}</p>
+    <p class="footer">
+      Not a member? <a (click)="mode = 'signup'">Signup now</a>
+    </p>
+  </form>
+
+  <!-- SIGNUP FORM -->
+  <form *ngIf="mode === 'signup'" (ngSubmit)="signup()" #signupForm="ngForm" class="form-box">
+    <input
+      type="email"
+      placeholder="Email Address"
+      required
+      [(ngModel)]="signupEmail"
+      name="signupEmail"
+    />
+    <input
+      type="text"
+      placeholder="Company Name"
+      required
+      [(ngModel)]="signupCompany"
+      name="signupCompany"
+    />
+    <input
+      type="password"
+      placeholder="Password"
+      required
+      [(ngModel)]="signupPassword"
+      name="signupPassword"
+    />
+    <button type="submit" [disabled]="!signupForm.form.valid">Signup</button>
+    <p *ngIf="signupMessage" class="message">{{ signupMessage }}</p>
+    <p class="footer">
+      Already a member? <a (click)="mode = 'login'">Login</a>
+    </p>
+  </form>
+
+  <!-- OTP VERIFICATION FORM -->
+  <form *ngIf="mode === 'verifyOtp'" (ngSubmit)="verifyOtp()" #otpForm="ngForm" class="form-box">
+    <h3>Verify OTP</h3>
+    <p>OTP sent to: <strong>{{ signupEmail }}</strong></p>
+    <input
+      type="text"
+      placeholder="Enter OTP"
+      required
+      [(ngModel)]="otp"
+      name="otp"
+    />
+    <button type="submit" [disabled]="!otpForm.form.valid">Verify OTP</button>
+    <p *ngIf="verifyMessage" class="message">{{ verifyMessage }}</p>
+  </form>
+</div>
