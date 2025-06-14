@@ -1,1 +1,17 @@
-<p>header works!</p>
+<div class="d-flex justify-content-between m-3">
+    <div class="d-flex align-items-center">
+        <img height="40" src="{{logo}}" alt="">
+    </div>
+    <div class="d-flex align-items-center gap-2">
+        <button mat-mini-fab class="homeButton">
+            <mat-icon>home</mat-icon>
+        </button>
+        <button mat-mini-fab class="bg-danger homeButton">
+            <span style="color: white;">SOS</span>
+        </button>
+        <button mat-mini-fab class="homeButton">
+            <mat-icon>settings</mat-icon>
+        </button>  
+        <img class="rounded-2 shadow-lg" height="40" [src]="image">
+    </div>
+</div>
