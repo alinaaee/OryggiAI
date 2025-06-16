@@ -1,0 +1,54 @@
+<!-- src/app/org-basics/org-basics.component.html -->
+<div class="org-basics-container">
+  <h2>Organization Basics</h2>
+  <form #orgForm="ngForm" (ngSubmit)="next(orgForm)">
+
+    <!-- Company Name -->
+    <div *ngIf="companyQuestion" class="form-group">
+      <label>{{ companyQuestion.questionText }}</label>
+      <input
+        name="companyName"
+        type="text"
+        required
+        [(ngModel)]="companyName"
+      />
+    </div>
+
+    <!-- Industry -->
+    <div *ngIf="industryQuestion" class="form-group">
+      <label>{{ industryQuestion.questionText }}</label>
+      <select
+        name="industry"
+        required
+        [(ngModel)]="industry"
+      >
+        <option value="" disabled selected>Select industry</option>
+        <option value="Finance">Finance</option>
+        <option value="Healthcare">Healthcare</option>
+        <option value="Other">Other</option>
+      </select>
+    </div>
+
+    <!-- Employee Count -->
+    <div *ngIf="employeeCountQuestion" class="form-group">
+      <label>
+        {{ employeeCountQuestion.questionText }}: {{ employeeCount }}
+      </label>
+      <input
+        name="employeeCount"
+        type="range"
+        min="0"
+        max="10000"
+        [(ngModel)]="employeeCount"
+      />
+      <div class="slider-labels">
+        <span>0</span>
+        <span>10,000+</span>
+      </div>
+    </div>
+
+    <button type="submit" [disabled]="!orgForm.form.valid">
+      Next
+    </button>
+  </form>
+</div>
