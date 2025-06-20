@@ -1,0 +1,41 @@
+::ng-deep .custom-tab .mat-mdc-tab-header {
+    background-color: #373737 !important; 
+    border-radius: 0.5rem !important;
+}
+
+::ng-deep .custom-tab .mat-tab-label {
+    color: #8F8F8F !important; 
+}
+
+::ng-deep .custom-tab .mat-tab-label.mat-tab-label-active {
+    color: #F7E100 !important; 
+}
+
+::ng-deep .mat-horizontal-stepper-header-container {
+    background-color: #000;
+    font-family: 'NeueMachina-Ultrabold' !important;
+    color: #fff;
+    border-radius: 20px;
+    padding: 20px;
+}
+
+::ng-deep .mat-step-text-label{
+    font-family: 'NeueMachina-Ultrabold' !important
+}
+
+::ng-deep .mat-horizontal-stepper-header .mat-step-icon{
+    background-color: #373737;
+    padding: 18px;
+}
+
+::ng-deep .mat-step-label.mat-step-label-selected{
+    color: #ffffff !important;
+}
+    
+::ng-deep .mat-step-icon-selected{
+    color:#F7E100 !important;
+}
+::ng-deep .mat-stepper-horizontal {
+    background-color: #ffffff !important;
+}
+

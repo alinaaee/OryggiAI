@@ -1,0 +1,22 @@
+<app-header></app-header>
+<div class="d-flex flex-column min-vh-100">
+    <div class="flex-grow-1 overflow-auto px-4 py-5">
+        <mat-horizontal-stepper linear>
+        <mat-step label="Organization Basics">
+            <app-organisation-basics #orgBasics></app-organisation-basics>
+        </mat-step>
+        <mat-step label="Technology Infrastructure">
+            <app-technology-infrastructure #techInfra></app-technology-infrastructure>
+        </mat-step>
+        <mat-step label="Work Hours and Shift">
+            <app-work-hours #workHours></app-work-hours>
+        </mat-step>
+        <mat-step label="Access and Log Details">
+            <app-access-and-logging #logs></app-access-and-logging>
+        </mat-step>
+        </mat-horizontal-stepper>
+    </div>
+    <div class="bg-white border-top py-2 px-4 text-end sticky-bottom">
+        <button class="btn btn-dark custom-btn" (click)="saveAll()">SAVE</button>
+    </div>
+</div>

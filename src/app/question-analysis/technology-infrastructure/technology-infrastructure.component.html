@@ -1,0 +1,53 @@
+<div class="pt-4">
+    <h3 class="NeuLight fw-bold">Technology Infrastructure</h3>
+    <p class="mb-5">Tell us about your security systems and technology infrastructure.</p>
+    <div class="row">
+        <div *ngFor="let question of questions" class="col-md-6">
+            <ng-container [ngSwitch]="question.inputType">
+                <div class="d-grid" *ngSwitchCase="'text'">
+                    <span>{{ question.questionText }} <span *ngIf="question.required">*</span></span>
+                    <mat-form-field appearance="outline" class="w-100">
+                        <input matInput type="text" [(ngModel)]="answersMap[question.questionID]" name="{{question.questionID}}" [required]="question.required !== undefined ? question.required : false">
+                    </mat-form-field>
+                </div>
+                <div class="d-grid" *ngSwitchCase="'select'">
+                    <span>{{ question.questionText }} <span *ngIf="question.required">*</span></span>
+                    <mat-form-field appearance="outline" class="w-100">
+                        <mat-select [(ngModel)]="answersMap[question.questionID]" name="{{question.questionID}}" [required]="question.required !== undefined ? question.required : false">
+                            <mat-option *ngFor="let option of question.answers" [value]="option.answerID">
+                                {{ option.answerText }}
+                            </mat-option>
+                        </mat-select>
+                    </mat-form-field>
+                </div>
+                <div class="d-grid" *ngSwitchCase="'slider'" class="d-flex flex-column mt-2">
+                    <span class="mb-1">{{ question.questionText }}</span>
+                    <mat-slider [min]="0" [max]="100000" [step]="50" tickInterval="10000" thumbLabel [(ngModel)]="answersMap[question.questionID]" name="{{question.questionID}}"></mat-slider>
+                    <span class="mt-1">{{ answersMap[question.questionID] }}</span>
+                </div>
+                <div class="d-grid" *ngSwitchCase="'textarea'">
+                    <span>{{ question.questionText }}</span>
+                    <mat-form-field appearance="outline" class="w-100">
+                        <textarea matInput [(ngModel)]="answersMap[question.questionID]" name="{{question.questionID}}" [required]="question.required !== undefined ? question.required : false"> </textarea>
+                    </mat-form-field>
+                </div>
+                <mat-checkbox class="d-grid" *ngSwitchCase="'checkbox'" [(ngModel)]="answersMap[question.questionID]" name="{{question.questionID}}">
+                    {{ question.questionText }} <span *ngIf="question.required">*</span>
+                </mat-checkbox>
+                <div class="d-grid" *ngSwitchCase="'multiselect'">
+                    <span>{{ question.questionText }}<span *ngIf="question.required">*</span></span>
+                    <mat-form-field appearance="outline" class="w-100">
+                        <mat-select multiple [(ngModel)]="answersMap[question.questionID]" name="{{question.questionID}}" [required]="question.required !== undefined ? question.required : false">
+                        <mat-option *ngFor="let option of question.answers" [value]="option.answerID">
+                            {{ option.answerText }}
+                        </mat-option>
+                        </mat-select>
+                    </mat-form-field>
+                </div>
+                <div *ngSwitchDefault class="text-muted">
+                    Unsupported input type: {{ question.inputType }}
+                </div>
+            </ng-container>
+        </div>
+    </div>
+</div>
