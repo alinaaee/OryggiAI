@@ -4,6 +4,8 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { HttpClient, HttpClientModule } from '@angular/common/http';
 import { Router, RouterModule } from '@angular/router';
+import { WizardStateService } from '../services/wizard-state.service';
+
 
 @Component({
   selector: 'app-auth',
@@ -35,7 +37,7 @@ export class AuthComponent {
   otp = '';
   verifyMessage = '';
 
-  constructor(private http: HttpClient, private router: Router) {}
+  constructor(private http: HttpClient, private router: Router, private wizardState: WizardStateService) {}
 
   login() {
     this.loginMessage = '';
@@ -67,19 +69,27 @@ export class AuthComponent {
     });
   }
 
+  
   verifyOtp() {
     this.verifyMessage = '';
-    this.http.post<{ message: string }>('/api/Tenant_/verify-otp', {
+    this.http.post<{ token: string; tenantId: number; message: string }>('/api/Tenant_/verify-otp', {
       email: this.signupEmail,
       companyName: this.signupCompany,
       password: this.signupPassword,
       otp: this.otp
     }).subscribe({
       next: res => {
-        this.verifyMessage = res.message;
-        setTimeout(() => this.router.navigate(['/auth']), 2000);
+        // store auth + tenant
+        localStorage.setItem('token', res.token);
+        localStorage.setItem('tenantId', res.tenantId.toString());
+
+        // set tenant for WizardService URLs
+        this.wizardState.setTenantId(res.tenantId.toString());
+
+        // go straight to the wizard
+        this.router.navigate(['/wizard']);
       },
-      error: err => this.verifyMessage = err.error?.message || 'OTP failed'
+      error: err => this.verifyMessage = err.error?.message || 'OTP verification failed'
     });
   }
 }

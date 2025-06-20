@@ -7,22 +7,32 @@ import {
   HttpEvent
 } from '@angular/common/http';
 import { Observable } from 'rxjs';
+import { WizardStateService } from '../services/wizard-state.service';
 
 @Injectable()
 export class AuthInterceptor implements HttpInterceptor {
+  constructor(private wizardState: WizardStateService) {}
+
   intercept(
     req: HttpRequest<unknown>,
     next: HttpHandler
   ): Observable<HttpEvent<unknown>> {
-    const token = localStorage.getItem('token');
-    if (token) {
-      // Clone the request and set the new header in one step.
-      const authReq = req.clone({
-        setHeaders: { Authorization: `Bearer ${token}` }
-      });
-      return next.handle(authReq);
+    const token  = localStorage.getItem('token');
+    const tenant = this.wizardState.getTenantId() 
+                || localStorage.getItem('tenantId');
+
+    // If neither token nor tenant, just forward the original request
+    if (!token && !tenant) {
+      return next.handle(req);
     }
-    // If no token, forward the request unmodified
-    return next.handle(req);
+
+    // Build headers object
+    const headers: Record<string,string> = {};
+    if (token)  headers['Authorization'] = `Bearer ${token}`;
+    if (tenant) headers['tenantId']     = tenant;
+
+    // Clone once with both headers set
+    const authReq = req.clone({ setHeaders: headers });
+    return next.handle(authReq);
   }
 }

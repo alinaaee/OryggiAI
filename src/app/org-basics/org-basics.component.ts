@@ -1,66 +1,58 @@
 // src/app/org-basics/org-basics.component.ts
-import { Component, OnInit }   from '@angular/core';
-import { CommonModule }         from '@angular/common';
-import { FormsModule }          from '@angular/forms';
-import { QuestionService, QuestionMaster } from '../services/question.service';
-import { Router }               from '@angular/router';
+import { Component, OnInit } from '@angular/core';
+import { CommonModule }      from '@angular/common';
+import {
+  FormBuilder,
+  FormGroup,
+  FormsModule,
+  ReactiveFormsModule
+} from '@angular/forms';
+
+// Material modules
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatSelectModule }    from '@angular/material/select';
+import { MatInputModule }     from '@angular/material/input';
+import { MatButtonModule }    from '@angular/material/button';
+import { MatIconModule }      from '@angular/material/icon';
+import { QuestionDto }         from '../models/question.model';
+import { QuestionService }     from '../services/question.service';
 
 @Component({
   selector: 'app-org-basics',
   standalone: true,
-  // <-- import the modules, not NgForm
   imports: [
     CommonModule,
-    FormsModule
+    ReactiveFormsModule,
+    MatFormFieldModule,
+    MatSelectModule,
+    MatInputModule,
+    FormsModule,
+    MatButtonModule,
+    MatIconModule
   ],
   templateUrl: './org-basics.component.html',
   styleUrls: ['./org-basics.component.css']
 })
 export class OrgBasicsComponent implements OnInit {
-  private readonly COMPANY_NAME_ID = '4976f088-d090-407b-b63d-c3972976bacd';
-  private readonly INDUSTRY_ID     = '4c1e3f88-cc71-4309-876b-dfb89634c941';
-  private readonly EMP_COUNT_ID    = 'e6f59700-6e1b-47ff-9268-e0a9c11fe110';
+  questions: QuestionDto[] = [];
+  answersMap: Record<string, string> = {}; // questionID → selected answerID or value
 
-  companyQuestion?: QuestionMaster;
-  industryQuestion?: QuestionMaster;
-  employeeCountQuestion?: QuestionMaster;
-
-  companyName = '';
-  industry    = '';
-  employeeCount = 50;
-
-  constructor(
-    private qs: QuestionService,
-    private router: Router
-  ) {}
+  constructor(private qs: QuestionService) {}
 
   ngOnInit() {
-    this.qs.getQuestions([
-      this.COMPANY_NAME_ID,
-      this.INDUSTRY_ID,
-      this.EMP_COUNT_ID
-    ]).subscribe(questions => {
-      questions.forEach(q => {
-        if (q.questionId === this.COMPANY_NAME_ID) {
-          this.companyQuestion = q;
-        }
-        if (q.questionId === this.INDUSTRY_ID) {
-          this.industryQuestion = q;
-        }
-        if (q.questionId === this.EMP_COUNT_ID) {
-          this.employeeCountQuestion = q;
-        }
-      });
+    // 🔹 Hard-coded pageKey for this step
+    this.qs.getQuestionsForPage('OrgBasics').subscribe({
+      next: qs => this.questions = qs,
+      error: err => console.error('Failed to load OrgBasics questions', err)
     });
   }
 
-  next(form: any) {
-    if (!form.valid) return;
-    console.log('Org basics:', {
-      companyName: this.companyName,
-      industry: this.industry,
-      employeeCount: this.employeeCount
-    });
-    this.router.navigate(['/tech']);
+  onAnswerChange(questionID: string, value: string) {
+    this.answersMap[questionID] = value;
+  }
+
+  onSubmit() {
+    console.log('Collected answers:', this.answersMap);
+    // TODO: send this.answersMap to your tenant‐API to save
   }
 }
