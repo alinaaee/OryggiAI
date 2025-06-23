@@ -3,7 +3,7 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatIconModule } from '@angular/material/icon';
 import { MatSelectModule } from '@angular/material/select';
 import { AgGridAngular }    from 'ag-grid-angular';
-import { ColDef, ICellRendererParams } from 'ag-grid-community';
+import { ColDef, GridOptions, ICellRendererParams } from 'ag-grid-community';
 import {MatChipsModule} from '@angular/material/chips';
 
 @Component({
@@ -15,9 +15,16 @@ import {MatChipsModule} from '@angular/material/chips';
 })
 export class RecentAnomaliesComponent {
   @Input() rowData: any[] = [];
+
   getRowClass(params: any): string {
     return 'wrap-row';
   }
+
+  gridOptions: GridOptions = {
+    pagination: true,
+    paginationPageSize: 10,
+    paginationPageSizeSelector: [1,2,3,10,20,50]
+  };
   
   columnDefs: ColDef[] = [
     { headerName: 'Timestamp', field: 'timestamp', sortable: true},
@@ -26,16 +33,13 @@ export class RecentAnomaliesComponent {
       headerName: 'Severity', field: 'severity', width: 135,
       cellRenderer: (params: ICellRendererParams) => {
         const sev = (params.value || '').toString().toLowerCase();
-
         const classMap: Record<string, string> = {
           critical: 'severity-chip critical',
           high: 'severity-chip high',
           medium: 'severity-chip medium',
           low: 'severity-chip low'
         };
-
         const cssClass = classMap[sev] || 'severity-chip default';
-
         return `<span class="${cssClass}">${params.value}</span>`;
       }
     },

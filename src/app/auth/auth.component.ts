@@ -69,7 +69,6 @@ export class AuthComponent {
     });
   }
 
-  
   verifyOtp() {
     this.verifyMessage = '';
     this.http.post<{ token: string; tenantId: number; message: string }>('/api/Tenant_/verify-otp', {
@@ -79,15 +78,10 @@ export class AuthComponent {
       otp: this.otp
     }).subscribe({
       next: res => {
-        // store auth + tenant
         localStorage.setItem('token', res.token);
         localStorage.setItem('tenantId', res.tenantId.toString());
-
-        // set tenant for WizardService URLs
         this.wizardState.setTenantId(res.tenantId.toString());
-
-        // go straight to the wizard
-        this.router.navigate(['/wizard']);
+        this.router.navigate(['/questions']);
       },
       error: err => this.verifyMessage = err.error?.message || 'OTP verification failed'
     });
