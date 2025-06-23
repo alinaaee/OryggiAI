@@ -127,3 +127,45 @@ button:hover {
     font-size: 18px;
   }
 }
+
+.back-icon{
+    background-color: #E7E7E7;
+    border-radius: 50%;
+    &:hover{
+        transition: all 0.3s ease-in-out;
+        transform: scale(1.2); 
+    }
+}
+
+
+/* CLASSES FOR CHIPS BEING SHOWN IN GRID */
+.severity-chip {
+    padding: 0px 10px;
+    border-radius: 16px;
+    display: inline-block;
+    font-size: 0.85rem;
+    font-weight: 500;
+    text-transform: capitalize;
+    color: #fff;
+}
+
+.severity-chip.critical {
+    background-color: #dc3545; /* Red */
+}
+
+.severity-chip.high {
+    background-color: #ffc107; /* Yellow */
+    color: #000;
+}
+
+.severity-chip.medium {
+    background-color: #17a2b8; /* Teal/Blue */
+}
+
+.severity-chip.low {
+     background-color: #28a745; /* Green */
+}
+
+.severity-chip.default {
+     background-color: #6c757d; /* Grey */
+}

@@ -1,12 +1,9 @@
 <app-header></app-header>
-
-<app-dashboard-counts
-  [totalLogs]="anomalies.length"
-  [totalAnomalies]="anomalies.length">
-</app-dashboard-counts>
-
-<div class="row p-3">
-  <div class="col-md-12">
-    <app-recent-anomalies [rowData]="anomalies"></app-recent-anomalies>
+<div class="px-4">
+  <app-dashboard-counts [totalLogs]="totalLogs" [totalAnomalies]="totalAnomalies"></app-dashboard-counts>
+  <div class="row">
+    <div class="col-md-12">
+      <app-recent-anomalies [rowData]="anomalies"></app-recent-anomalies>
+    </div>
   </div>
 </div>
