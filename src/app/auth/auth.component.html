@@ -18,7 +18,7 @@
           <mat-label>Password</mat-label>
           <input matInput type="password" required [(ngModel)]="loginPassword" name="loginPassword">
         </mat-form-field>
-        <button mat-flat-button class="custom-btn w-100 mb-3" type="submit" [disabled]="!loginForm.form.valid || loading">
+        <button mat-flat-button class="custom-btn-lg w-100 mb-3" type="submit" [disabled]="!loginForm.form.valid || loading">
           <mat-progress-spinner *ngIf="loading" mode="indeterminate" diameter="20"></mat-progress-spinner>
           <span *ngIf="!loading">LOGIN</span>
         </button>
@@ -40,7 +40,7 @@
           <mat-label>Password</mat-label>
           <input matInput type="password" required [(ngModel)]="signupPassword" name="signupPassword">
         </mat-form-field>
-        <button mat-flat-button class="custom-btn w-100 mb-3" type="submit" [disabled]="!signupForm.form.valid || signupLoading">
+        <button mat-flat-button class="custom-btn-lg w-100 mb-3" type="submit" [disabled]="!signupForm.form.valid || signupLoading">
           <mat-progress-spinner *ngIf="signupLoading" mode="indeterminate" diameter="20"></mat-progress-spinner>
           <span *ngIf="!signupLoading">Signup</span>
         </button>
@@ -56,7 +56,7 @@
           <mat-label>Enter OTP</mat-label>
           <input matInput type="text" required [(ngModel)]="otp" name="otp">
         </mat-form-field>
-        <button mat-flat-button class="custom-btn w-100 mb-3" type="submit" [disabled]="!otpForm.form.valid || otpLoading">
+        <button mat-flat-button class="custom-btn-lg w-100 mb-3" type="submit" [disabled]="!otpForm.form.valid || otpLoading">
           <mat-progress-spinner *ngIf="otpLoading" mode="indeterminate" diameter="20"></mat-progress-spinner>
           <span *ngIf="!otpLoading">Verify OTP</span>
         </button>
