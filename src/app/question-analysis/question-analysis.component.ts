@@ -45,7 +45,7 @@ export class QuestionAnalysisComponent {
         this.wizardState.setAnswers('logs', logsData);
         console.log(orgData,  techData, workHoursData, logsData);
         Swal.fire('Saved!', 'All answers have been saved.', 'success');
-        this.router.navigate(['/dashboard']);
+        // this.router.navigate(['/dashboard']);
       }
     });
   }

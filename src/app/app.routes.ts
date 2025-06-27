@@ -12,12 +12,12 @@ import { ReviewComponent }    from './wizard/review/review.component';
 
 export const routes: Routes = [
   { path: 'auth',      component: AuthComponent },
-  { path: 'dashboard', component: DashboardComponent, // canActivate: [AuthGuard] 
+  { path: 'dashboard', component: DashboardComponent, canActivate: [AuthGuard] 
   },
   { path: 'org',  component: OrgBasicsComponent },
   { path: 'login', component: AuthComponent },
   { path: 'wizard',
-    // canActivate: [AuthGuard],
+    canActivate: [AuthGuard],
     children: [
       { path: '',       component: ProfileWizardComponent },  // /wizard
       { path: 'tech',   component: TechComponent    },       // /wizard/tech

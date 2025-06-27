@@ -23,7 +23,7 @@ export class RecentAnomaliesComponent {
   gridOptions: GridOptions = {
     pagination: true,
     paginationPageSize: 10,
-    paginationPageSizeSelector: [1,2,3,10,20,50]
+    paginationPageSizeSelector: [5,10,20,50]
   };
   
   columnDefs: ColDef[] = [
@@ -44,9 +44,9 @@ export class RecentAnomaliesComponent {
       }
     },
     { headerName: 'Message',     field: 'message', width: 400 },
-    { headerName: 'Behavior Analysis', field: 'behavior_analysis',   sortable: true, width: 400 },
-    { headerName: 'Predictive Analysis', field: 'predictive_threat',  sortable: true, width: 400 },
-    { headerName: 'Access Health Score', field: 'access_health_score',   sortable: true, width: 400 },
+    { headerName: 'Behavior Analysis', field: 'behaviorAnalysis',   sortable: true, width: 400 },
+    { headerName: 'Predictive Analysis', field: 'predictiveAnalysis',  sortable: true, width: 400 },
+    { headerName: 'Access Health Score', field: 'accessHealthScore',   sortable: true, width: 400 },
     { headerName: 'Recommendations', field: 'recommendations',   sortable: true, width: 400 }
   ];
 }

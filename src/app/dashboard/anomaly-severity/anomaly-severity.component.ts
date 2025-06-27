@@ -1,22 +1,6 @@
 // src/app/dashboard/anomaly-severity/anomaly-severity.component.ts
-import {
-  Component,
-  Input,
-  OnChanges,
-  SimpleChanges,
-  ViewChild
-} from '@angular/core';
-import {
-  ChartComponent,
-  NgApexchartsModule,
-  ApexNonAxisChartSeries,
-  ApexChart,
-  ApexResponsive,
-  ApexFill,
-  ApexLegend,
-  ApexPlotOptions,
-  ApexDataLabels
-} from 'ng-apexcharts';
+import { Component, Input, OnChanges, SimpleChanges, ViewChild } from '@angular/core';
+import { ChartComponent, NgApexchartsModule, ApexNonAxisChartSeries, ApexChart, ApexResponsive, ApexFill, ApexLegend, ApexPlotOptions, ApexDataLabels} from 'ng-apexcharts';
 
 export type ChartOptions = {
   series: ApexNonAxisChartSeries;
@@ -48,12 +32,12 @@ export class AnomalySeverityComponent implements OnChanges {
     },
     labels: ['Critical', 'High', 'Medium', 'Low'],
     fill: {
-      colors: ['#E24A32', '#F7B924', '#FFD54F', '#D3D3D3']  // your brand colors
+      colors: ["#E3E3E3", "#000000", "#8F8F8F", "#F7E100"] 
     },
     plotOptions: {
       pie: {
         donut: {
-          size: '65%',        // thickness of ring
+          size: '65%',        
           labels: {
             show: true,
             name: { show: false },
@@ -70,7 +54,7 @@ export class AnomalySeverityComponent implements OnChanges {
         }
       }
     },
-   dataLabels: {
+    dataLabels: {
       enabled: true,
 
     formatter: (val, opts) => `${Number(val).toFixed(0)}%`,

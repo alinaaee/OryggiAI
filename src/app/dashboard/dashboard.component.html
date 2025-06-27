@@ -2,7 +2,10 @@
 <div class="px-4">
   <app-dashboard-counts [totalLogs]="totalLogs" [totalAnomalies]="totalAnomalies"></app-dashboard-counts>
   <div class="row">
-    <div class="col-md-12">
+    <div class="col-md-4">
+      <app-anomaly-severity [series]="chartData"></app-anomaly-severity>
+    </div>
+    <div class="col-md-8">
       <app-recent-anomalies [rowData]="anomalies"></app-recent-anomalies>
     </div>
   </div>

@@ -22,7 +22,7 @@ import { MatButtonModule } from '@angular/material/button';
   styleUrl: './organisation-basics.component.css'
 })
 export class OrganisationBasicsComponent {
-    questions: QuestionDto[] = [];
+  questions: QuestionDto[] = [];
   answersMap: Record<string, any> = {};
   private readonly PAGE_KEY = 'OrgBasics';
 

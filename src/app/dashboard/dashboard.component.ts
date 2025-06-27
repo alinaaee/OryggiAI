@@ -6,11 +6,12 @@ import { MatButtonModule }    from '@angular/material/button';
 import { MatIconModule }      from '@angular/material/icon';
 import { RecentAnomaliesComponent } from './recent-anomalies/recent-anomalies.component';
 import { HeaderComponent }    from '../common/header/header.component';
+import { AnomalySeverityComponent } from "./anomaly-severity/anomaly-severity.component";
 
 @Component({
   selector: 'app-dashboard',
   standalone: true,
-  imports: [ CommonModule, HeaderComponent, DashboardCountsComponent, MatButtonModule, MatIconModule, RecentAnomaliesComponent],
+  imports: [CommonModule, HeaderComponent, DashboardCountsComponent, MatButtonModule, MatIconModule, RecentAnomaliesComponent, AnomalySeverityComponent],
   templateUrl: './dashboard.component.html',
   styleUrls: ['./dashboard.component.css']
 })
@@ -23,26 +24,22 @@ export class DashboardComponent implements OnInit {
 
   ngOnInit() {
     this.pbService.getLatestAiResponse().subscribe({
-      next: ({ aiResponse }) => {
-        console.log(aiResponse);
+      next: (response) => {
+        const { aiResponse } = response || {};  
+
         if (!aiResponse) return;
 
-        let records: any[];
+        let parsed: any;
         try {
-          records = JSON.parse(aiResponse);
+          parsed = JSON.parse(aiResponse);
         } catch (err) {
           console.error('Invalid JSON from AIResponse:', aiResponse, err);
           return;
         }
-
-        // Extract totals object (assumed to be last element)
-        const totals = records.find(r => r.totalLogs !== undefined);
-
-        this.totalLogs = totals?.totalLogs || 0;
-        this.totalAnomalies = totals?.totalAnomalies || 0;
-
-        // Filter out the totals object from anomalies list
-        this.anomalies = records.filter(r => r.totalLogs === undefined);
+        console.log(parsed);
+        this.totalLogs = parsed.totalLogs || 0;
+        this.totalAnomalies = parsed.totalAnomalies || 0;
+        this.anomalies = parsed.anomalies || [];
 
         this.chartData = this.anomalies.reduce(
           ([c, h, m, l], r: any) => {
@@ -59,4 +56,5 @@ export class DashboardComponent implements OnInit {
       error: err => console.error(err)
     });
   }
+
 }
