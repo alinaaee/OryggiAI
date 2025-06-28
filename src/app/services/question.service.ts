@@ -1,15 +1,22 @@
+// src/app/services/question.service.ts
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { QuestionDto } from '../models/question.model';
 
+import { environment } from '../../environments/environment';
+
 @Injectable({ providedIn: 'root' })
 export class QuestionService {
-  private readonly API = '/api/Master/pages';
+
+private readonly apiUrl = environment.apiBaseUrl;
 
   constructor(private http: HttpClient) {}
 
   getQuestionsForPage(pageKey: string): Observable<QuestionDto[]> {
-    return this.http.get<QuestionDto[]>(`${this.API}/${pageKey}/questions`);
+
+    // Ensure no duplicated slashes if apiBaseUrl ends with '/'
+    const base = this.apiUrl.endsWith('/') ? this.apiUrl : `${this.apiUrl}/`;
+  return this.http.get<QuestionDto[]>(`${base}Master/pages/${pageKey}/questions`);
   }
 }

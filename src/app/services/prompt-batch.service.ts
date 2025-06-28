@@ -2,6 +2,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
+import { environment } from '../../environments/environment';
 
 export interface LatestAiResponse {
   aiResponse: string;
@@ -9,7 +10,9 @@ export interface LatestAiResponse {
 
 @Injectable({ providedIn: 'root' })
 export class PromptBatchService {
-  private readonly url = '/api/Tenant_/prompt-batch/latest';
+private readonly apiUrl = environment.apiBaseUrl;
+
+private readonly url = `${this.apiUrl}Tenant_/prompt-batch/latest`;
 
   constructor(private http: HttpClient) {}
 

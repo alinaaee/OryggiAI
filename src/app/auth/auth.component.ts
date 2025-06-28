@@ -5,6 +5,7 @@ import { FormsModule } from '@angular/forms';
 import { HttpClient, HttpClientModule } from '@angular/common/http';
 import { Router, RouterModule } from '@angular/router';
 import { WizardStateService } from '../services/wizard-state.service';
+import { environment } from '../../environments/environment';
 import { MatFormFieldModule, MatLabel } from '@angular/material/form-field';
 import { MatIconModule } from '@angular/material/icon';
 import { MatInputModule } from '@angular/material/input';
@@ -39,13 +40,16 @@ export class AuthComponent {
   otpLoading = false;
   signupLoading = false;
   //#endregion [variables]
-  
+    private apiUrl = environment.apiBaseUrl;
   constructor(private http: HttpClient, private router: Router, private wizardState: WizardStateService) {}
 
   login() {
     this.loginMessage = '';
     this.loading = true;
-    this.http.post<{ token: string; tenantId: number }>('/api/Tenant_/login', { email: this.loginEmail,   password: this.loginPassword }).subscribe({
+    this.http.post<{ token: string; tenantId: number }>( `${this.apiUrl}Tenant_/login`, {
+      email: this.loginEmail,
+      password: this.loginPassword
+    }).subscribe({
       next: res => {
         localStorage.setItem('token', res.token);
         localStorage.setItem('tenantId', res.tenantId.toString());
@@ -63,7 +67,11 @@ export class AuthComponent {
   signup() {
     this.signupMessage = '';
     this.signupLoading = true;
-    this.http.post<{ message: string }>('/api/Tenant_/signup', { email: this.signupEmail, companyName: this.signupCompany, password: this.signupPassword }).subscribe({
+    this.http.post<{ message: string }>(this.apiUrl +'Tenant_/signup', {
+      email: this.signupEmail,
+      companyName: this.signupCompany,
+      password: this.signupPassword
+    }).subscribe({
       next: res => {
         this.signupMessage = res.message;
         this.mode = 'verifyOtp';
@@ -79,8 +87,12 @@ export class AuthComponent {
   verifyOtp() {
     this.verifyMessage = '';
     this.otpLoading = true;
-    this.http.post<{ token: string; tenantId: number; message: string }>('/api/Tenant_/verify-otp', {
-      email: this.signupEmail, companyName: this.signupCompany, password: this.signupPassword, otp: this.otp}).subscribe({
+    this.http.post<{ token: string; tenantId: number; message: string }>(this.apiUrl +'Tenant_/verify-otp', {
+      email: this.signupEmail,
+      companyName: this.signupCompany,
+      password: this.signupPassword,
+      otp: this.otp
+    }).subscribe({
       next: res => {
         localStorage.setItem('token', res.token);
         localStorage.setItem('tenantId', res.tenantId.toString());
