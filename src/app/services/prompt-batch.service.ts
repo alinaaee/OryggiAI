@@ -11,12 +11,10 @@ export interface LatestAiResponse {
 @Injectable({ providedIn: 'root' })
 export class PromptBatchService {
 private readonly apiUrl = environment.apiBaseUrl;
-
 private readonly url = `${this.apiUrl}Tenant_/prompt-batch/latest`;
 
   constructor(private http: HttpClient) {}
 
-  /** Fetches the single most recent AI response JSON blob */
   getLatestAiResponse(): Observable<LatestAiResponse> {
     return this.http.get<LatestAiResponse>(this.url);
   }

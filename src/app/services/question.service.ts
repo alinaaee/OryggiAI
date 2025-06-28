@@ -10,13 +10,10 @@ import { environment } from '../../environments/environment';
 export class QuestionService {
 
 private readonly apiUrl = environment.apiBaseUrl;
-
   constructor(private http: HttpClient) {}
 
   getQuestionsForPage(pageKey: string): Observable<QuestionDto[]> {
-
-    // Ensure no duplicated slashes if apiBaseUrl ends with '/'
     const base = this.apiUrl.endsWith('/') ? this.apiUrl : `${this.apiUrl}/`;
-  return this.http.get<QuestionDto[]>(`${base}Master/pages/${pageKey}/questions`);
+    return this.http.get<QuestionDto[]>(`${base}Master/pages/${pageKey}/questions`);
   }
 }

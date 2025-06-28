@@ -9,25 +9,13 @@ export interface WizardSaveResponse {
 
 @Injectable({ providedIn: 'root' })
 export class WizardService {
- constructor(
-   private http: HttpClient,
-   private wizardState: WizardStateService
- ) {}
+  constructor( private http: HttpClient, private wizardState: WizardStateService ) {}
 
-  /**
-   * POSTs a page’s answers map to your tenant‐wizard endpoint.
-   * @param pageKey  e.g. 'OrgBasics', 'Tech', 'Hours', 'Logs'
-   * @param answers  mapping of questionID → answerText
-   */
-   savePage(
-  pageKey: string,
-  answers: Record<string, string>
-): Observable<WizardSaveResponse> {
-  // no tenant in the URL any more
+  savePage(pageKey: string, answers: Record<string, string>): Observable<WizardSaveResponse> {
   return this.http.post<WizardSaveResponse>(
-    `/api/Tenant_/wizard/${pageKey}`,
-    answers
-  );
+      `/api/Tenant_/wizard/${pageKey}`,
+      answers
+    );
   }
 }
 
