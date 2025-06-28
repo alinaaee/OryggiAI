@@ -1,17 +1,24 @@
+//MATERIAL IMPORTS
 import { Component, OnInit } from '@angular/core';
 import { CommonModule }       from '@angular/common';
-import { PromptBatchService } from '../services/prompt-batch.service';
-import { DashboardCountsComponent } from './dashboard-counts/dashboard-counts.component';
+
+//MATERIAL IMPORTS
 import { MatButtonModule }    from '@angular/material/button';
 import { MatIconModule }      from '@angular/material/icon';
+
+//OTHER IMPORTS(SERVICES AND OTHER COMPONENTS)
+import { PromptBatchService } from '../services/prompt-batch.service';
+import { DashboardCountsComponent } from './dashboard-counts/dashboard-counts.component';
 import { RecentAnomaliesComponent } from './recent-anomalies/recent-anomalies.component';
 import { HeaderComponent }    from '../common/header/header.component';
 import { AnomalySeverityComponent } from "./anomaly-severity/anomaly-severity.component";
+import { DeviceWiseSeverityComponent } from "./device-wise-severity/device-wise-severity.component";
+import { TypeWiseSeverityComponent } from "./anomaly-severity/type-wise-severity/type-wise-severity.component";
 
 @Component({
   selector: 'app-dashboard',
   standalone: true,
-  imports: [CommonModule, HeaderComponent, DashboardCountsComponent, MatButtonModule, MatIconModule, RecentAnomaliesComponent, AnomalySeverityComponent],
+  imports: [CommonModule, HeaderComponent, DashboardCountsComponent, MatButtonModule, MatIconModule, RecentAnomaliesComponent, AnomalySeverityComponent, DeviceWiseSeverityComponent, TypeWiseSeverityComponent],
   templateUrl: './dashboard.component.html',
   styleUrls: ['./dashboard.component.css']
 })

@@ -1,0 +1,3 @@
+:host ::ng-deep .p-metergroup-label-list-horizontal {
+    --p-metergroup-label-list-horizontal-gap: 0.5rem !important;
+}

@@ -1,5 +1,6 @@
 // src/app/dashboard/anomaly-severity/anomaly-severity.component.ts
 import { Component, Input, OnChanges, SimpleChanges, ViewChild } from '@angular/core';
+import { MatCardModule } from '@angular/material/card';
 import { ChartComponent, NgApexchartsModule, ApexNonAxisChartSeries, ApexChart, ApexResponsive, ApexFill, ApexLegend, ApexPlotOptions, ApexDataLabels} from 'ng-apexcharts';
 
 export type ChartOptions = {
@@ -16,7 +17,7 @@ export type ChartOptions = {
 @Component({
   selector: 'app-anomaly-severity',
   standalone: true,
-  imports: [NgApexchartsModule],
+  imports: [NgApexchartsModule, MatCardModule],
   templateUrl: './anomaly-severity.component.html',
   styleUrls: ['./anomaly-severity.component.css']
 })

@@ -1,0 +1,12 @@
+<mat-card class="bg-white p-4" style="height: 414px;">
+    <h5 class="NeuRegular mb-4">Anomaly Type Breakdown</h5>
+    <div class="px-3" style="overflow: auto;">
+        <div class="pb-4" *ngFor="let group of typeMeterGroups">
+            <div class="d-flex justify-content-between">
+                <p class="mb-1">{{ group.severityType }}</p>
+                <span class="text-sm text-gray-500">{{ group.total }} anomalies</span>
+            </div>
+            <p-metergroup [value]="group.value"></p-metergroup>
+        </div>
+    </div>
+</mat-card>
