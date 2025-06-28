@@ -1,6 +1,6 @@
 <app-header></app-header>
 <div class="p-4">
-  <app-dashboard-counts [totalLogs]="totalLogs" [totalAnomalies]="totalAnomalies"></app-dashboard-counts>
+  <app-dashboard-counts [totalLogs]="totalLogs" [totalAnomalies]="totalAnomalies" [systemHealth]="systemHealth"></app-dashboard-counts>
   <div class="row py-4">
     <div class="col-md-4">
       <app-anomaly-severity [series]="chartData"></app-anomaly-severity>

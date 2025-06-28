@@ -32,7 +32,6 @@ export class DeviceWiseSeverityComponent {
 
     // Collect unique device names
     this.anomalies.forEach(anomaly => {
-      console.log('Processing anomaly:', anomaly);
       (anomaly.deviceNames || []).forEach((device: string) => deviceSet.add(device));
     });
 

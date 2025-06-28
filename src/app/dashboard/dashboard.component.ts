@@ -14,6 +14,7 @@ import { HeaderComponent }    from '../common/header/header.component';
 import { AnomalySeverityComponent } from "./anomaly-severity/anomaly-severity.component";
 import { DeviceWiseSeverityComponent } from "./device-wise-severity/device-wise-severity.component";
 import { TypeWiseSeverityComponent } from "./anomaly-severity/type-wise-severity/type-wise-severity.component";
+import { DashboardService } from '../services/dashboard.service';
 
 @Component({
   selector: 'app-dashboard',
@@ -27,7 +28,8 @@ export class DashboardComponent implements OnInit {
   chartData: number[] = [0, 0, 0, 0];
   totalLogs = 0;
   totalAnomalies = 0;
-  constructor(private pbService: PromptBatchService) {}
+  systemHealth = 0;
+  constructor(private pbService: PromptBatchService, private dashboardService: DashboardService) {}
 
   ngOnInit() {
     this.pbService.getLatestAiResponse().subscribe({
@@ -43,9 +45,10 @@ export class DashboardComponent implements OnInit {
           console.error('Invalid JSON from AIResponse:', aiResponse, err);
           return;
         }
-        console.log(parsed);
+        console.log('today : ', parsed);
         this.totalLogs = parsed.totalLogs || 0;
         this.totalAnomalies = parsed.totalAnomalies || 0;
+        this.systemHealth = parsed.systemHealth || 0;
         this.anomalies = parsed.anomalies || [];
 
         this.chartData = this.anomalies.reduce(
@@ -62,6 +65,17 @@ export class DashboardComponent implements OnInit {
       },
       error: err => console.error(err)
     });
+    this.loadAiResponses('2025-06-27');
   }
 
+  aiResponses: string[] = [];
+  loadAiResponses(date: string): void {
+    this.dashboardService.getAiResponsesByDate(date).subscribe({
+      next: res => {
+        this.aiResponses = res.aiResponses || [];
+        console.log('by date logs:', res);
+      },
+      error: err => console.error('Error fetching AI responses', err)
+    });
+  }
 }

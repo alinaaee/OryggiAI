@@ -15,6 +15,7 @@ import {MatChipsModule} from '@angular/material/chips';
 })
 export class RecentAnomaliesComponent {
   @Input() rowData: any[] = [];
+  gridHeight = 100; 
 
   getRowClass(params: any): string {
     return 'wrap-row';
@@ -23,7 +24,7 @@ export class RecentAnomaliesComponent {
   gridOptions: GridOptions = {
     pagination: true,
     paginationPageSize: 10,
-    paginationPageSizeSelector: [5,10,20,50]
+    paginationPageSizeSelector: [10,20,50],
   };
   
   columnDefs: ColDef[] = [

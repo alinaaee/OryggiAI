@@ -12,4 +12,5 @@ import { MatIconModule }     from '@angular/material/icon';
 export class DashboardCountsComponent {
   @Input() totalLogs = 0;
   @Input() totalAnomalies = 0;
+  @Input() systemHealth = 0;
 }

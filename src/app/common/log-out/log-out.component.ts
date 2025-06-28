@@ -33,7 +33,7 @@ export class LogOutComponent {
   }
 
   logout(): void {
-    localStorage.removeItem('authToken');
+    localStorage.removeItem('token');
     localStorage.removeItem('tenantId');
     
     this.router.navigate(['/login']).then(() => {
