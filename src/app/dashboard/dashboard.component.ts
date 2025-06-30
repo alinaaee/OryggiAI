@@ -24,20 +24,35 @@ import { DashboardService } from '../services/dashboard.service';
   styleUrls: ['./dashboard.component.css']
 })
 export class DashboardComponent implements OnInit {
+  constructor(private pbService: PromptBatchService, private dashboardService: DashboardService) {}
+
+  //#region [Variables]
+  
   anomalies: any[]    = [];
   chartData: number[] = [0, 0, 0, 0];
   totalLogs = 0;
   totalAnomalies = 0;
   systemHealth = 0;
-  constructor(private pbService: PromptBatchService, private dashboardService: DashboardService) {}
+  // Add previous day stats
+  prevTotalLogs = 0;
+  prevTotalAnomalies = 0;
+  prevSystemHealth = 0;
+  // Add percent change
+  logsChange = 0;
+  anomaliesChange = 0;
+  healthChange = 0;
+
+  //#endregion [Variables]
 
   ngOnInit() {
+    this.getLatestAIResponse();
+  }
+
+  getLatestAIResponse(){
     this.pbService.getLatestAiResponse().subscribe({
       next: (response) => {
         const { aiResponse } = response || {};  
-
         if (!aiResponse) return;
-
         let parsed: any;
         try {
           parsed = JSON.parse(aiResponse);
@@ -45,11 +60,23 @@ export class DashboardComponent implements OnInit {
           console.error('Invalid JSON from AIResponse:', aiResponse, err);
           return;
         }
-        console.log('today : ', parsed);
+        // console.log('today : ', parsed);
         this.totalLogs = parsed.totalLogs || 0;
         this.totalAnomalies = parsed.totalAnomalies || 0;
         this.systemHealth = parsed.systemHealth || 0;
         this.anomalies = parsed.anomalies || [];
+
+        // Extract latest date from anomalies
+        const latestTimestamp = this.anomalies.map(a => a.timestamp).sort().reverse()[0];
+        const latestDate = latestTimestamp?.split(' ')[0];
+        // console.log('Latest anomaly timestamp:', latestTimestamp, 'Latest date:', latestDate);
+
+        // Get previous day date
+        if (latestDate) {
+          const prevDate = this.getPreviousDate(latestDate);
+          // console.log('Previous date to fetch:', prevDate);
+          this.getPreviousDayStats(prevDate);
+        }
 
         this.chartData = this.anomalies.reduce(
           ([c, h, m, l], r: any) => {
@@ -65,17 +92,48 @@ export class DashboardComponent implements OnInit {
       },
       error: err => console.error(err)
     });
-    // this.aiResponsesByDate('2025-06-27');
   }
 
-  // aiResponses: string[] = [];
-  // aiResponsesByDate(date: string): void {
-  //   this.dashboardService.getAiResponsesByDate(date).subscribe({
-  //     next: res => {
-  //       this.aiResponses = res.aiResponses || [];
-  //       console.log('by date logs:', res);
-  //     },
-  //     error: err => console.error('Error fetching AI responses', err)
-  //   });
-  // }
+  getPreviousDayStats(prevDate: string) {
+    this.dashboardService.getAiResponsesByDate(prevDate).subscribe({
+      next: (response) => {
+        const { aiResponse } = response || {};
+        if (!aiResponse) return;
+        let parsed: any;
+        try {
+          parsed = JSON.parse(aiResponse);
+        } catch (err) {
+          console.error('Invalid JSON from AIResponse:', aiResponse, err);
+          return;
+        }
+        this.prevTotalLogs = parsed.totalLogs || 0;
+        this.prevTotalAnomalies = parsed.totalAnomalies || 0;
+        this.prevSystemHealth = parsed.systemHealth || 0;
+
+        // Calculate percent change
+        this.logsChange = this.getPercentChange(this.prevTotalLogs, this.totalLogs);
+        this.anomaliesChange = this.getPercentChange(this.prevTotalAnomalies, this.totalAnomalies);
+        this.healthChange = this.getPercentDifference(this.prevSystemHealth, this.systemHealth);
+      },
+      error: err => console.error(err)
+    });
+  }
+
+  //#region [Utility Methods]
+  getPreviousDate(dateStr: string): string {
+    const date = new Date(dateStr);
+    date.setDate(date.getDate() - 1);
+    // Format as YYYY-MM-DD
+    return date.toISOString().slice(0, 10);
+  }
+
+  getPercentChange(prev: number, curr: number): number {
+    if (prev === 0) return curr === 0 ? 0 : 100;
+    return ((curr - prev) / prev) * 100;
+  }
+
+  getPercentDifference(prev: number, curr: number): number {
+    return curr - prev;
+  }
+  //#endregion [Utility Methods]
 }

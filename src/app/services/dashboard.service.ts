@@ -13,9 +13,9 @@ export class DashboardService {
     return this.http.get<string>(this.apiUrl + 'Tenant_/dashboard/latest');
   }
 
-  getAiResponsesByDate(date: string): Observable<{ aiResponses: string[] }> {
+  getAiResponsesByDate(date: string): Observable<{ aiResponse: string }> {
     const params = new HttpParams().set('date', date);
-    return this.http.get<{ aiResponses: string[] }>(`${this.apiUrl}Tenant_/prompt-batch`, { params });
+    return this.http.get<{ aiResponse: string }>(`${this.apiUrl}Tenant_/prompt-batch`, { params });
   }
-  
+
 }
