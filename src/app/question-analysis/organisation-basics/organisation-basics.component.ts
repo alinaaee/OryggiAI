@@ -46,12 +46,17 @@ export class OrganisationBasicsComponent {
   getAnswers(): Record<string, string> {
     const raw = this.form.value;
     const result: Record<string, string> = {};
+
     for (const key in raw) {
       const val = raw[key];
+      const question = this.questions.find(q => q.questionID === key);
+      if (!question) continue;  
       if (Array.isArray(val)) {
-        result[key] = val.join(',');  
+        const labels = val.map(v => question.answers?.find(opt => opt.answerID === v)?.answerText || v);
+        result[key] = labels.join(',');
       } else if (val !== undefined && val !== null && val !== '') {
-        result[key] = String(val);    
+        const label = question.answers?.find(opt => opt.answerID === val)?.answerText || val;
+        result[key] = String(label);
       }
     }
     return result;
