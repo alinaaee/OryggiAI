@@ -5,32 +5,60 @@ import { CommonModule } from '@angular/common';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MatSelectModule } from '@angular/material/select';
-import { FormsModule } from '@angular/forms';
+import { FormBuilder, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
 import { MatSliderModule } from '@angular/material/slider';
 import { MatCheckboxModule } from '@angular/material/checkbox';
 
 @Component({
   selector: 'app-work-hours',
-  imports: [CommonModule, MatFormFieldModule, MatInputModule, MatSelectModule, FormsModule, MatSliderModule, MatCheckboxModule],
+  imports: [CommonModule, MatFormFieldModule, MatInputModule, MatSelectModule, FormsModule, MatSliderModule, MatCheckboxModule, ReactiveFormsModule],
   templateUrl: './work-hours.component.html',
   styleUrl: './work-hours.component.css'
 })
 export class WorkHoursComponent {
   questions: QuestionDto[] = [];
-  answersMap: Record<string, any> = {};
+  form!: FormGroup;
   private readonly PAGE_KEY = 'Hours';
 
-  constructor(private questionService: QuestionService) {}
+  constructor(private questionService: QuestionService, private fb: FormBuilder) {}
 
   ngOnInit(): void {
+    this.form = this.fb.group({});
     this.questionService.getQuestionsForPage(this.PAGE_KEY).subscribe({
-      next: qs => this.questions = qs,
-      error: err => console.error('Failed to load Hours questions', err)
+      next: qs => {
+        this.questions = qs;
+        qs.forEach(q => {
+          const control = this.fb.control('', q.required ? Validators.required : []);
+          this.form.addControl(q.questionID, control);
+        });
+      },
+      error: err => console.error('Failed to load OrgBasics questions', err)
     });
   }
 
-  getAnswers(): { [key: string]: any } {
-    return this.answersMap;
+  getAnswers(): Record<string, string> {
+    const raw = this.form.value;
+    const result: Record<string, string> = {};
+    for (const key in raw) {
+      const val = raw[key];
+      if (Array.isArray(val)) {
+        result[key] = val.join(',');  
+      } else if (val !== undefined && val !== null && val !== '') {
+        result[key] = String(val);    
+      }
+    }
+    return result;
+  }
+
+  hasAnyAnswer(): boolean {
+    return Object.values(this.form.value).some(val =>
+      val !== null && val !== undefined && val !== '' && 
+      !(Array.isArray(val) && val.length === 0)
+    );
+  }
+
+  isValid(): boolean {
+    return this.form.valid;
   }
 
 }

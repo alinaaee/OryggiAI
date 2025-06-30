@@ -1,6 +1,6 @@
 <app-header></app-header>
 <div class="d-flex flex-column min-vh-100">
-    <div class="flex-grow-1 overflow-auto px-4 py-5">
+    <div class="overflow-auto px-4 pt-2">
         <mat-horizontal-stepper linear>
         <mat-step label="Organization Basics">
             <app-organisation-basics #orgBasics></app-organisation-basics>
@@ -16,7 +16,7 @@
         </mat-step>
         </mat-horizontal-stepper>
     </div>
-    <div class="bg-white border-top py-2 px-4 text-end sticky-bottom">
+    <div class="p-4 text-end">
         <button class="btn btn-dark custom-btn" (click)="saveAll()">SAVE</button>
     </div>
 </div>

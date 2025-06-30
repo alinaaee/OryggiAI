@@ -7,6 +7,8 @@ import { WorkHoursComponent } from "./work-hours/work-hours.component";
 import { AccessAndLoggingComponent } from "./access-and-logging/access-and-logging.component";
 import Swal from 'sweetalert2';
 import { WizardStateService } from '../services/wizard-state.service';
+import { QuestionService } from '../services/question.service';
+import { MatSnackBar } from '@angular/material/snack-bar';
 import { Router } from '@angular/router';
 
 @Component({
@@ -17,7 +19,7 @@ import { Router } from '@angular/router';
 })
 export class QuestionAnalysisComponent {
 
-  constructor(private wizardState: WizardStateService, private router: Router){}
+  constructor(private wizardState: WizardStateService, private questionService: QuestionService, private snackBar: MatSnackBar, private router: Router){}
   
   @ViewChild('orgBasics') orgBasicsComponent!: OrganisationBasicsComponent;
   @ViewChild('techInfra') techInfraComponent!: TechnologyInfrastructureComponent;
@@ -25,6 +27,10 @@ export class QuestionAnalysisComponent {
   @ViewChild('logs') logsComponent!: AccessAndLoggingComponent;
 
   saveAll() {
+      if (!this.orgBasicsComponent.hasAnyAnswer() || !this.techInfraComponent.hasAnyAnswer() || !this.workHoursComponent.hasAnyAnswer() || !this.logsComponent.hasAnyAnswer()) {
+        this.snackBar.open('Please answer at least one question in each section before saving.', 'Close', { duration: 3000 });
+        return;
+      }
     Swal.fire({
       title: 'Are you sure?',
       text: 'Do you want to save all the answers?',
@@ -39,13 +45,20 @@ export class QuestionAnalysisComponent {
         const workHoursData = this.workHoursComponent.getAnswers();
         const logsData = this.logsComponent.getAnswers();
         
+        this.questionService.savePage('OrgBasics', orgData).subscribe();
+        this.questionService.savePage('Tech', techData).subscribe();
+        this.questionService.savePage('Hours', workHoursData).subscribe();
+        this.questionService.savePage('Logs', logsData).subscribe();
+
         this.wizardState.setAnswers('organisationBasics', orgData);
         this.wizardState.setAnswers('technologyInfrastructure', techData);
         this.wizardState.setAnswers('workHours', workHoursData);
         this.wizardState.setAnswers('logs', logsData);
         console.log(orgData,  techData, workHoursData, logsData);
-        Swal.fire('Saved!', 'All answers have been saved.', 'success');
-        // this.router.navigate(['/dashboard']);
+        this.snackBar.open('All answers have been saved.', 'Close',{
+          duration: 3000
+        });
+        this.router.navigate(['/dashboard']);
       }
     });
   }

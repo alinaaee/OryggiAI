@@ -65,17 +65,17 @@ export class DashboardComponent implements OnInit {
       },
       error: err => console.error(err)
     });
-    this.loadAiResponses('2025-06-27');
+    // this.aiResponsesByDate('2025-06-27');
   }
 
-  aiResponses: string[] = [];
-  loadAiResponses(date: string): void {
-    this.dashboardService.getAiResponsesByDate(date).subscribe({
-      next: res => {
-        this.aiResponses = res.aiResponses || [];
-        console.log('by date logs:', res);
-      },
-      error: err => console.error('Error fetching AI responses', err)
-    });
-  }
+  // aiResponses: string[] = [];
+  // aiResponsesByDate(date: string): void {
+  //   this.dashboardService.getAiResponsesByDate(date).subscribe({
+  //     next: res => {
+  //       this.aiResponses = res.aiResponses || [];
+  //       console.log('by date logs:', res);
+  //     },
+  //     error: err => console.error('Error fetching AI responses', err)
+  //   });
+  // }
 }

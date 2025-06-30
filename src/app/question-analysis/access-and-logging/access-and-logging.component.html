@@ -1,55 +1,57 @@
-<div class="pt-4">
-    <h3 class="NeuLight">Access Logs and Details</h3>
-    <p class="mb-5">Tell us how your system logs access events and what devices are used..</p>
-    <div class="row">
-        <div *ngFor="let question of questions" class="col-md-6">
-            <ng-container [ngSwitch]="question.inputType">
-                <div class="d-grid" *ngSwitchCase="'text'">
-                    <span>{{ question.questionText }}<span *ngIf="question.required">*</span></span>
-                    <mat-form-field appearance="outline" class="w-100">
-                        <input matInput type="text" [(ngModel)]="answersMap[question.questionID]" name="{{question.questionID}}" [required]="question.required !== undefined ? question.required : false">
-                    </mat-form-field>
-                </div>
-                <div class="d-grid" *ngSwitchCase="'select'">
-                    <span>{{ question.questionText }}<span *ngIf="question.required">*</span></span>
-                    <mat-form-field appearance="outline" class="w-100">
-                        <mat-select [(ngModel)]="answersMap[question.questionID]" name="{{question.questionID}}" [required]="question.required !== undefined ? question.required : false"> 
+<form [formGroup]="form">
+    <div class="pt-4">
+        <h3 class="NeuLight">Access Logs and Details</h3>
+        <p class="mb-5">Tell us how your system logs access events and what devices are used..</p>
+        <div class="row">
+            <div *ngFor="let question of questions" class="col-md-6">
+                <ng-container [ngSwitch]="question.inputType">
+                    <div class="d-grid" *ngSwitchCase="'text'">
+                        <span>{{ question.questionText }}<span *ngIf="question.required">*</span></span>
+                        <mat-form-field appearance="outline" class="w-100">
+                            <input matInput type="text" [formControlName]="question.questionID">
+                        </mat-form-field>
+                    </div>
+                    <div class="d-grid" *ngSwitchCase="'select'">
+                        <span>{{ question.questionText }}<span *ngIf="question.required">*</span></span>
+                        <mat-form-field appearance="outline" class="w-100">
+                            <mat-select [formControlName]="question.questionID"> 
+                                <mat-option *ngFor="let option of question.answers" [value]="option.answerID">
+                                    {{ option.answerText }}
+                                </mat-option>
+                            </mat-select>
+                        </mat-form-field>
+                    </div>
+                    <div class="d-grid" *ngSwitchCase="'slider'" class="d-flex flex-column">
+                        <label class="form-label mb-1">{{ question.questionText }}</label>
+                        <mat-slider [min]="0" [max]="100000" [step]="50" [formControlName]="question.questionID" tickInterval="10000"></mat-slider>
+                        <span class="mt-1">{{ form.get(question.questionID)?.value }}</span>
+                    </div>
+                    <div class="d-grid" *ngSwitchCase="'textarea'">
+                        <mat-label>{{ question.questionText }}</mat-label>
+                        <mat-form-field appearance="outline" class="w-100">
+                            <textarea matInput [formControlName]="question.questionID"></textarea>
+                        </mat-form-field>
+                    </div>
+                    <div class="d-grid" *ngSwitchCase="'checkbox'" class="pt-2">
+                        <mat-checkbox [formControlName]="question.questionID"> {{ question.questionText }}
+                            <span *ngIf="question.required">*</span>
+                        </mat-checkbox>
+                    </div>
+                    <div class="d-grid" *ngSwitchCase="'multiselect'">
+                        <span>{{ question.questionText }}<span *ngIf="question.required">*</span></span>
+                        <mat-form-field appearance="outline" class="w-100">
+                            <mat-select multiple [formControlName]="question.questionID">
                             <mat-option *ngFor="let option of question.answers" [value]="option.answerID">
                                 {{ option.answerText }}
                             </mat-option>
-                        </mat-select>
-                    </mat-form-field>
-                </div>
-                <div class="d-grid" *ngSwitchCase="'slider'" class="d-flex flex-column">
-                    <label class="form-label mb-1">{{ question.questionText }}</label>
-                    <mat-slider [min]="0" [max]="100000" [step]="50" [(ngModel)]="answersMap[question.questionID]" name="{{question.questionID}}" tickInterval="10000"></mat-slider>
-                    <span class="mt-1">{{ answersMap[question.questionID] }}</span>
-                </div>
-                <div class="d-grid" *ngSwitchCase="'textarea'">
-                    <mat-label>{{ question.questionText }}</mat-label>
-                    <mat-form-field appearance="outline" class="w-100">
-                        <textarea matInput [(ngModel)]="answersMap[question.questionID]" name="{{question.questionID}}" [required]="question.required !== undefined ? question.required : false"></textarea>
-                    </mat-form-field>
-                </div>
-                <div class="d-grid" *ngSwitchCase="'checkbox'" class="pt-2">
-                    <mat-checkbox [(ngModel)]="answersMap[question.questionID]" name="{{question.questionID}}"> {{ question.questionText }}
-                        <span *ngIf="question.required">*</span>
-                    </mat-checkbox>
-                </div>
-                <div class="d-grid" *ngSwitchCase="'multiselect'">
-                    <span>{{ question.questionText }}<span *ngIf="question.required">*</span></span>
-                    <mat-form-field appearance="outline" class="w-100">
-                        <mat-select multiple [(ngModel)]="answersMap[question.questionID]" name="{{question.questionID}}" [required]="question.required !== undefined ? question.required : false">
-                        <mat-option *ngFor="let option of question.answers" [value]="option.answerID">
-                            {{ option.answerText }}
-                        </mat-option>
-                        </mat-select>
-                    </mat-form-field>
-                </div>
-                <div *ngSwitchDefault class="text-muted">
-                    Unsupported input type: {{ question.inputType }}
-                </div>
-            </ng-container>
+                            </mat-select>
+                        </mat-form-field>
+                    </div>
+                    <div *ngSwitchDefault class="text-muted">
+                        Unsupported input type: {{ question.inputType }}
+                    </div>
+                </ng-container>
+            </div>
         </div>
     </div>
-</div>
+</form>

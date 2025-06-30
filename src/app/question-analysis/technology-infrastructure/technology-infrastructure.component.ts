@@ -5,31 +5,59 @@ import { CommonModule } from '@angular/common';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MatCheckboxModule } from '@angular/material/checkbox';
-import { FormsModule } from '@angular/forms';
+import { FormBuilder, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
 import { MatSelectModule } from '@angular/material/select';
 import { MatSliderModule } from '@angular/material/slider';
 
 @Component({
   selector: 'app-technology-infrastructure',
-  imports: [CommonModule, MatFormFieldModule, MatInputModule, MatCheckboxModule, FormsModule, MatSelectModule, MatSliderModule],
+  imports: [CommonModule, MatFormFieldModule, MatInputModule, MatCheckboxModule, FormsModule, MatSelectModule, MatSliderModule, ReactiveFormsModule],
   templateUrl: './technology-infrastructure.component.html',
   styleUrl: './technology-infrastructure.component.css'
 })
 export class TechnologyInfrastructureComponent {
   questions: QuestionDto[] = [];
-  answersMap: Record<string, any> = {};
+  form!: FormGroup;
   private readonly PAGE_KEY = 'Tech';
 
-  constructor(private questionService: QuestionService) {}
+  constructor(private questionService: QuestionService, private fb: FormBuilder) {}
 
   ngOnInit(): void {
+    this.form = this.fb.group({});
     this.questionService.getQuestionsForPage(this.PAGE_KEY).subscribe({
-        next: qs => this.questions = qs,
-        error: err => console.error('Failed to load Tech questions', err)
-      });
+      next: qs => {
+        this.questions = qs;
+        qs.forEach(q => {
+          const control = this.fb.control('', q.required ? Validators.required : []);
+          this.form.addControl(q.questionID, control);
+        });
+      },
+      error: err => console.error('Failed to load OrgBasics questions', err)
+    });
   }
 
-  getAnswers(): { [key: string]: any } {
-    return this.answersMap;
+  getAnswers(): Record<string, string> {
+    const raw = this.form.value;
+    const result: Record<string, string> = {};
+    for (const key in raw) {
+      const val = raw[key];
+      if (Array.isArray(val)) {
+        result[key] = val.join(',');  
+      } else if (val !== undefined && val !== null && val !== '') {
+        result[key] = String(val);    
+      }
+    }
+    return result;
+  }
+
+  hasAnyAnswer(): boolean {
+    return Object.values(this.form.value).some(val =>
+      val !== null && val !== undefined && val !== '' && 
+      !(Array.isArray(val) && val.length === 0)
+    );
+  }
+
+  isValid(): boolean {
+    return this.form.valid;
   }
 }
