@@ -7,10 +7,11 @@ import { MatSelectModule } from '@angular/material/select';
 import { MatSliderModule } from '@angular/material/slider';
 import { QuestionDto } from '../../models/question.model';
 import { QuestionService } from '../../services/question.service';
+import { QuestionFormComponent } from "../question-form/question-form.component";
 
 @Component({
   selector: 'app-access-and-logging',
-  imports: [CommonModule, MatFormFieldModule, MatInputModule, MatSelectModule, FormsModule, MatSliderModule, ReactiveFormsModule],
+  imports: [CommonModule, MatFormFieldModule, MatInputModule, MatSelectModule, FormsModule, MatSliderModule, ReactiveFormsModule, QuestionFormComponent],
   templateUrl: './access-and-logging.component.html',
   styleUrl: './access-and-logging.component.css'
 })

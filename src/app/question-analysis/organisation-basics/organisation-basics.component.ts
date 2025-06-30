@@ -14,10 +14,11 @@ import { MatSelectModule } from '@angular/material/select';
 import {MatSliderModule} from '@angular/material/slider';
 import {MatCheckboxModule} from '@angular/material/checkbox';
 import { MatButtonModule } from '@angular/material/button';
+import { QuestionFormComponent } from "../question-form/question-form.component";
 
 @Component({
   selector: 'app-organisation-basics',
-  imports: [CommonModule, FormsModule, MatFormFieldModule, MatInputModule, MatSelectModule, MatSliderModule, MatCheckboxModule, MatButtonModule, ReactiveFormsModule],
+  imports: [CommonModule, FormsModule, MatFormFieldModule, MatInputModule, MatSelectModule, MatSliderModule, MatCheckboxModule, MatButtonModule, ReactiveFormsModule, QuestionFormComponent],
   templateUrl: './organisation-basics.component.html',
   styleUrl: './organisation-basics.component.css'
 })

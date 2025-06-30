@@ -8,10 +8,11 @@ import { MatCheckboxModule } from '@angular/material/checkbox';
 import { FormBuilder, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
 import { MatSelectModule } from '@angular/material/select';
 import { MatSliderModule } from '@angular/material/slider';
+import { QuestionFormComponent } from "../question-form/question-form.component";
 
 @Component({
   selector: 'app-technology-infrastructure',
-  imports: [CommonModule, MatFormFieldModule, MatInputModule, MatCheckboxModule, FormsModule, MatSelectModule, MatSliderModule, ReactiveFormsModule],
+  imports: [CommonModule, MatFormFieldModule, MatInputModule, MatCheckboxModule, FormsModule, MatSelectModule, MatSliderModule, ReactiveFormsModule, QuestionFormComponent],
   templateUrl: './technology-infrastructure.component.html',
   styleUrl: './technology-infrastructure.component.css'
 })

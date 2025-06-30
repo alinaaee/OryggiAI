@@ -8,10 +8,11 @@ import { MatSelectModule } from '@angular/material/select';
 import { FormBuilder, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
 import { MatSliderModule } from '@angular/material/slider';
 import { MatCheckboxModule } from '@angular/material/checkbox';
+import { QuestionFormComponent } from "../question-form/question-form.component";
 
 @Component({
   selector: 'app-work-hours',
-  imports: [CommonModule, MatFormFieldModule, MatInputModule, MatSelectModule, FormsModule, MatSliderModule, MatCheckboxModule, ReactiveFormsModule],
+  imports: [CommonModule, MatFormFieldModule, MatInputModule, MatSelectModule, FormsModule, MatSliderModule, MatCheckboxModule, ReactiveFormsModule, QuestionFormComponent],
   templateUrl: './work-hours.component.html',
   styleUrl: './work-hours.component.css'
 })
