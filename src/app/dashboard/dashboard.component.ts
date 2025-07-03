@@ -14,6 +14,7 @@ import { AnomalySeverityComponent } from "./anomaly-severity/anomaly-severity.co
 import { DeviceWiseSeverityComponent } from "./device-wise-severity/device-wise-severity.component";
 import { TypeWiseSeverityComponent } from "./anomaly-severity/type-wise-severity/type-wise-severity.component";
 import { DashboardService } from '../services/dashboard.service';
+import { UtilityService } from '../utility.service';
 
 @Component({
   selector: 'app-dashboard',
@@ -23,7 +24,7 @@ import { DashboardService } from '../services/dashboard.service';
   styleUrls: ['./dashboard.component.css']
 })
 export class DashboardComponent implements OnInit {
-  constructor(private dashboardService: DashboardService) {}
+  constructor(private dashboardService: DashboardService, private utilService: UtilityService) {}
 
   //#region [Variables]
     latestDate = '';
@@ -58,7 +59,7 @@ export class DashboardComponent implements OnInit {
           console.error('Invalid JSON from AIResponse:', aiResponse, err);
           return;
         }
-        // console.log('today : ', parsed);
+        this.utilService.debugConsole('latest : ', parsed);
         this.totalLogs = parsed.totalLogs || 0;
         this.totalAnomalies = parsed.totalAnomalies || 0;
         this.systemHealth = parsed.systemHealth || 0;
@@ -108,6 +109,7 @@ export class DashboardComponent implements OnInit {
           console.error('Invalid JSON from AIResponse:', aiResponse, err);
           return;
         }
+        this.utilService.debugConsole('Previous day stats:', parsed);
         this.prevTotalLogs = parsed.totalLogs || 0;
         this.prevTotalAnomalies = parsed.totalAnomalies || 0;
         this.prevSystemHealth = parsed.systemHealth || 0;
