@@ -68,10 +68,30 @@ export class AnomalySeverityComponent implements OnChanges {
     },
     responsive: [
       {
+        breakpoint: 1200,
+        options: {
+          legend: { position: 'bottom' },
+          plotOptions: {
+            pie: { donut: { size: '10%' } }  
+          }
+        }
+      },
+      {
+        breakpoint: 768,
+        options: {
+          legend: { position: 'bottom' },
+          plotOptions: {
+            pie: { donut: { size: '55%' } }
+          }
+        }
+      },
+      {
         breakpoint: 480,
         options: {
-          chart: { width: 300 },
-          legend: { position: 'bottom' }
+          legend: { position: 'bottom' },
+          plotOptions: {
+            pie: { donut: { size: '50%' } }
+          }
         }
       }
     ]

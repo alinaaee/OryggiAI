@@ -13,6 +13,7 @@ import { MatIconModule }     from '@angular/material/icon';
   styleUrls: ['./dashboard-counts.component.css']
 })
 export class DashboardCountsComponent {
+  @Input() latestDate = ''; 
   @Input() totalLogs = 0;
   @Input() totalAnomalies = 0;
   @Input() systemHealth = 0;

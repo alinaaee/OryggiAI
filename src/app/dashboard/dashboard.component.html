@@ -1,8 +1,8 @@
-<app-header></app-header>
-<div class="p-4">
-  <app-dashboard-counts [totalLogs]="totalLogs" [totalAnomalies]="totalAnomalies" [systemHealth]="systemHealth"
-                        [logsChange]="logsChange" [anomaliesChange]="anomaliesChange" [healthChange]="healthChange"
-  ></app-dashboard-counts>
+<app-header #companyName></app-header>
+<div class="px-4">
+  <app-dashboard-counts [totalLogs]="totalLogs" [totalAnomalies]="totalAnomalies" [systemHealth]="systemHealth" [latestDate]="latestDate"
+      [logsChange]="logsChange" [anomaliesChange]="anomaliesChange" [healthChange]="healthChange">
+  </app-dashboard-counts>
   <div class="row py-4">
     <div class="col-md-4">
       <app-anomaly-severity [series]="chartData"></app-anomaly-severity>
@@ -14,7 +14,7 @@
       <app-type-wise-severity [anomalies]="anomalies"></app-type-wise-severity>
     </div>
   </div>
-    <div class="row">
-      <app-recent-anomalies [rowData]="anomalies"></app-recent-anomalies>
-    </div>
+  <div class="row">
+    <app-recent-anomalies [rowData]="anomalies"></app-recent-anomalies>
+  </div>
 </div>

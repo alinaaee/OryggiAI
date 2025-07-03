@@ -12,15 +12,16 @@ export interface WizardSaveResponse {
 @Injectable({ providedIn: 'root' })
 export class QuestionService {
 
-private readonly apiUrl = environment.apiBaseUrl;
+  private readonly apiUrl = environment.apiBaseUrl.endsWith('/') ? environment.apiBaseUrl : `${environment.apiBaseUrl}/`;
+
   constructor(private http: HttpClient) {}
 
-  getQuestionsForPage(pageKey: string): Observable<QuestionDto[]> {
-    const base = this.apiUrl.endsWith('/') ? this.apiUrl : `${this.apiUrl}/`;
-    return this.http.get<QuestionDto[]>(`${base}Master/pages/${pageKey}/questions`);
+  getAllQuestions(): Observable<QuestionDto[]> {
+    return this.http.get<QuestionDto[]>(`${this.apiUrl}Master/pages/questions`);
   }
 
-  savePage(pageKey: string, answers: Record<string, string>): Observable<WizardSaveResponse> {
-    return this.http.post<WizardSaveResponse>(`/api/Tenant_/wizard/${pageKey}`, answers);
+  saveAnswers(pageKey: string, answers: Record<string, string>): Observable<WizardSaveResponse> {
+    return this.http.post<WizardSaveResponse>(`${this.apiUrl}Tenant_/wizard/${pageKey}`, answers);
   }
+  
 }

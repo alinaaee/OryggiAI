@@ -6,11 +6,12 @@ import { environment } from '../../environments/environment';
 @Injectable({ providedIn: 'root' })
 
 export class DashboardService {
-  apiUrl = environment.apiBaseUrl;
   constructor(private http: HttpClient) {}
+  apiUrl = environment.apiBaseUrl;
+  companyName = '';
 
-  getLatestResponse(): Observable<string> {
-    return this.http.get<string>(this.apiUrl + 'Tenant_/dashboard/latest');
+  getLatestAiResponse(): Observable<{ aiResponse: string }> {
+    return this.http.get<{ aiResponse: string }>(`${this.apiUrl}Tenant_/prompt-batch/latest`);
   }
 
   getAiResponsesByDate(date: string): Observable<{ aiResponse: string }> {

@@ -1,41 +1,125 @@
 //ANGULAR COMPONENTS
 import { Component, ViewChild } from '@angular/core';
 import { Router } from '@angular/router';
+import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { CommonModule } from '@angular/common';
+import { forkJoin } from 'rxjs';
+
 //MATERIAL COMPONENTS
-import { MatStepperModule } from '@angular/material/stepper';
+import { MatStepper, MatStepperModule } from '@angular/material/stepper';
 import { MatSnackBar } from '@angular/material/snack-bar';
+import { MatButtonModule } from '@angular/material/button';
+import { MatDialog } from '@angular/material/dialog';
 
 //OTHER COMPONENTS AND SERVICES
 import Swal from 'sweetalert2';
-import { HeaderComponent } from "../common/header/header.component";
-import { OrganisationBasicsComponent } from "./organisation-basics/organisation-basics.component";
-import { TechnologyInfrastructureComponent } from "./technology-infrastructure/technology-infrastructure.component";
-import { WorkHoursComponent } from "./work-hours/work-hours.component";
-import { AccessAndLoggingComponent } from "./access-and-logging/access-and-logging.component";
-import { WizardStateService } from '../services/wizard-state.service';
 import { QuestionService } from '../services/question.service';
-import { ErrorLoggerService } from '../services/logger/error-logger.service';
+import { ErrorLoggerService } from '../services/error-logger.service';
+import { QuestionFormComponent } from './question-form/question-form.component';
+import { QuestionDto } from '../models/question.model';
+import { ShiftModalComponent } from './shift-modal/shift-modal.component';
+import { PAGE_KEYS } from '../generic classes/page-keys';
 
 @Component({
   selector: 'app-question-analysis',
-  imports: [HeaderComponent, MatStepperModule, OrganisationBasicsComponent, TechnologyInfrastructureComponent, WorkHoursComponent, AccessAndLoggingComponent],
+  imports: [CommonModule, MatStepperModule, MatButtonModule, QuestionFormComponent],
   templateUrl: './question-analysis.component.html',
   styleUrl: './question-analysis.component.css'
 })
 export class QuestionAnalysisComponent {
-
-  constructor(private wizardState: WizardStateService, private questionService: QuestionService, private snackBar: MatSnackBar, private router: Router, private errorLog: ErrorLoggerService){}
+  constructor( private fb: FormBuilder, private questionService: QuestionService, private snackBar: MatSnackBar, private router: Router, private errorLog: ErrorLoggerService, private dialog: MatDialog) {}
   
-  @ViewChild('orgBasics') orgBasicsComponent!: OrganisationBasicsComponent;
-  @ViewChild('techInfra') techInfraComponent!: TechnologyInfrastructureComponent;
-  @ViewChild('workHours') workHoursComponent!: WorkHoursComponent;
-  @ViewChild('logs') logsComponent!: AccessAndLoggingComponent;
+  //#region [Variables]
+    logo: string = 'assets/Logo/logo-Oryggi.png';
+    allQuestions: QuestionDto[] = [];
+    pageWiseQuestions: Record<string, QuestionDto[]> = {};
+    forms: Record<string, FormGroup> = {};
+    @ViewChild('stepper') stepper!: MatStepper;
+    hiddenShiftQuestionID: string | null = null;
+    shifts: { name: string; start: string; end: string }[] = [];
+  //#endregion [Variables]
 
+  ngOnInit(): void {
+    this.loadQuestions();
+  }
+
+  loadQuestions(){
+    this.questionService.getAllQuestions().subscribe({
+      next: (questions) => {
+        this.allQuestions = questions;
+        this.pageWiseQuestions = questions.reduce((acc, q) => {
+          acc[q.pageKey] = acc[q.pageKey] || [];
+          acc[q.pageKey].push(q);
+          return acc;
+        }, {} as Record<string, QuestionDto[]>);
+
+        Object.keys(this.pageWiseQuestions).forEach(pageKey => {
+          const form = this.fb.group({});
+          this.pageWiseQuestions[pageKey].forEach(q => {
+            if (pageKey === PAGE_KEYS.HOURS && !q.isActive) {
+              this.hiddenShiftQuestionID = q.questionID;
+              form.addControl(q.questionID, this.fb.control(''));
+            } else {
+              form.addControl(q.questionID, this.fb.control('', q.required ? Validators.required : []));
+            }
+          });
+          this.forms[pageKey] = form;
+        });
+      },
+      error: (err) => this.errorLog.logError(err)
+    });
+  }
+
+  getActiveQuestions(pageKey: string): QuestionDto[] {
+    return (this.pageWiseQuestions[pageKey] || []).filter(q => q.isActive);
+  }
+
+  openShiftModal() {
+    const dialogRef = this.dialog.open(ShiftModalComponent, {
+      data: this.shifts,
+      panelClass: ['md-screen-dialog']
+    });
+
+    dialogRef.afterClosed().subscribe(result => {
+      if (Array.isArray(result)) {
+        this.shifts = result;
+        if (this.hiddenShiftQuestionID && this.forms[PAGE_KEYS.HOURS]) {
+          const shiftData = JSON.stringify(this.shifts);
+          this.forms[PAGE_KEYS.HOURS].patchValue({ [this.hiddenShiftQuestionID]: shiftData });
+        }
+      }
+    });
+  }
+  
   saveAll() {
-    if (!this.orgBasicsComponent.hasAnyAnswer() || !this.techInfraComponent.hasAnyAnswer() || !this.workHoursComponent.hasAnyAnswer() || !this.logsComponent.hasAnyAnswer()) {
-      this.snackBar.open('Please answer at least one question in each section before saving.', 'Close', { duration: 3000 });
-      return;
+    const allAnswers: Record<string, Record<string, string>> = {};
+    for (const pageKey of Object.keys(this.forms)) {
+      const form = this.forms[pageKey];
+      const questions = this.pageWiseQuestions[pageKey];
+      const raw = form.value;
+      const answers: Record<string, string> = {};
+      const labelMap: Record<string, string> = {};
+      questions.forEach(q => {
+        q.answers?.forEach(a => labelMap[a.answerID] = a.answerText);
+      });
+      for (const key in raw) {
+        const val = raw[key];
+        if (val === undefined || val === null || val === '') continue;
+
+        if (Array.isArray(val)) {
+          const labels = val.map(v => labelMap[v] || v);
+          answers[key] = labels.join(',');
+        } else {
+          answers[key] = labelMap[val] || String(val);
+        }
+      }
+      if (Object.keys(answers).length === 0) {
+        this.snackBar.open(`Please answer at least one question in ${pageKey} before saving.`, 'Close', { duration: 3000 });
+        return;
+      }
+      allAnswers[pageKey] = answers;
     }
+
     Swal.fire({
       title: 'Are you sure?',
       text: 'Do you want to save all the answers?',
@@ -45,30 +129,32 @@ export class QuestionAnalysisComponent {
       cancelButtonText: 'Cancel'
     }).then((result) => {
       if (result.isConfirmed) {
-        try{
-          const orgData = this.orgBasicsComponent.getAnswers();
-          const techData = this.techInfraComponent.getAnswers();
-          const workHoursData = this.workHoursComponent.getAnswers();
-          const logsData = this.logsComponent.getAnswers();
-          
-          this.questionService.savePage('OrgBasics', orgData).subscribe();
-          this.questionService.savePage('Tech', techData).subscribe();
-          this.questionService.savePage('Hours', workHoursData).subscribe();
-          this.questionService.savePage('Logs', logsData).subscribe();
+        const requests = Object.entries(allAnswers).map(([pageKey, answers]) =>
+          this.questionService.saveAnswers(pageKey, answers)
+        );
 
-          this.wizardState.setAnswers('organisationBasics', orgData);
-          this.wizardState.setAnswers('technologyInfrastructure', techData);
-          this.wizardState.setAnswers('workHours', workHoursData);
-          this.wizardState.setAnswers('logs', logsData);
-          console.log(orgData,  techData, workHoursData, logsData);
-          this.snackBar.open('All answers have been saved.', 'Close',{
-            duration: 3000
-          });
-          this.router.navigate(['/dashboard']);
-        } catch(err: any){
-          this.errorLog.logError(err);
-        }
+        forkJoin(requests).subscribe({
+          next: () => {
+            this.snackBar.open('All answers have been saved.', 'Close', { duration: 3000 });
+            this.router.navigate(['/dashboard']);
+          },
+          error: (err) => this.errorLog.logError(err)
+        });
       }
     });
   }
+
+  //#region [Stepper Navigation]
+  nextStep() {
+    if (this.stepper.selectedIndex < this.stepper._steps.length - 1) {
+      this.stepper.next();
+    }
+  }
+
+  previousStep() {
+    if (this.stepper.selectedIndex > 0) {
+      this.stepper.previous();
+    }
+  }
+  //#endregion [Stepper Navigation]
 }

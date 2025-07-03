@@ -1,5 +1,5 @@
 //MATERIAL IMPORTS
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ViewChild } from '@angular/core';
 import { CommonModule }       from '@angular/common';
 
 //MATERIAL IMPORTS
@@ -7,7 +7,6 @@ import { MatButtonModule }    from '@angular/material/button';
 import { MatIconModule }      from '@angular/material/icon';
 
 //OTHER IMPORTS(SERVICES AND OTHER COMPONENTS)
-import { PromptBatchService } from '../services/prompt-batch.service';
 import { DashboardCountsComponent } from './dashboard-counts/dashboard-counts.component';
 import { RecentAnomaliesComponent } from './recent-anomalies/recent-anomalies.component';
 import { HeaderComponent }    from '../common/header/header.component';
@@ -24,24 +23,23 @@ import { DashboardService } from '../services/dashboard.service';
   styleUrls: ['./dashboard.component.css']
 })
 export class DashboardComponent implements OnInit {
-  constructor(private pbService: PromptBatchService, private dashboardService: DashboardService) {}
+  constructor(private dashboardService: DashboardService) {}
 
   //#region [Variables]
-  
-  anomalies: any[]    = [];
-  chartData: number[] = [0, 0, 0, 0];
-  totalLogs = 0;
-  totalAnomalies = 0;
-  systemHealth = 0;
-  // Add previous day stats
-  prevTotalLogs = 0;
-  prevTotalAnomalies = 0;
-  prevSystemHealth = 0;
-  // Add percent change
-  logsChange = 0;
-  anomaliesChange = 0;
-  healthChange = 0;
-
+    latestDate = '';
+    anomalies: any[]    = [];
+    chartData: number[] = [0, 0, 0, 0];
+    totalLogs = 0;
+    totalAnomalies = 0;
+    systemHealth = 0;
+    //previous day stats
+    prevTotalLogs = 0;
+    prevTotalAnomalies = 0;
+    prevSystemHealth = 0;
+    logsChange = 0;
+    anomaliesChange = 0;
+    healthChange = 0;
+    @ViewChild('companyName') companyName!: HeaderComponent;
   //#endregion [Variables]
 
   ngOnInit() {
@@ -49,7 +47,7 @@ export class DashboardComponent implements OnInit {
   }
 
   getLatestAIResponse(){
-    this.pbService.getLatestAiResponse().subscribe({
+    this.dashboardService.getLatestAiResponse().subscribe({
       next: (response) => {
         const { aiResponse } = response || {};  
         if (!aiResponse) return;
@@ -65,15 +63,19 @@ export class DashboardComponent implements OnInit {
         this.totalAnomalies = parsed.totalAnomalies || 0;
         this.systemHealth = parsed.systemHealth || 0;
         this.anomalies = parsed.anomalies || [];
+        if (parsed.companyName) {
+          this.dashboardService.companyName = parsed.companyName;
+          this.companyName.getCompanyName();
+        } 
 
         // Extract latest date from anomalies
         const latestTimestamp = this.anomalies.map(a => a.timestamp).sort().reverse()[0];
-        const latestDate = latestTimestamp?.split(' ')[0];
+        this.latestDate = latestTimestamp?.split(' ')[0] || '';
         // console.log('Latest anomaly timestamp:', latestTimestamp, 'Latest date:', latestDate);
 
         // Get previous day date
-        if (latestDate) {
-          const prevDate = this.getPreviousDate(latestDate);
+        if (this.latestDate) {
+          const prevDate = this.getPreviousDate(this.latestDate);
           // console.log('Previous date to fetch:', prevDate);
           this.getPreviousDayStats(prevDate);
         }
@@ -109,7 +111,6 @@ export class DashboardComponent implements OnInit {
         this.prevTotalLogs = parsed.totalLogs || 0;
         this.prevTotalAnomalies = parsed.totalAnomalies || 0;
         this.prevSystemHealth = parsed.systemHealth || 0;
-
         // Calculate percent change
         this.logsChange = this.getPercentChange(this.prevTotalLogs, this.totalLogs);
         this.anomaliesChange = this.getPercentChange(this.prevTotalAnomalies, this.totalAnomalies);

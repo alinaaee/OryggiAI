@@ -24,6 +24,7 @@ export class AuthComponent {
   //#region [variables]
   logo: string = 'assets/Logo/logo-Oryggi.png';
   mode: 'login' | 'signup' | 'verifyOtp' = 'login';
+  private apiUrl = environment.apiBaseUrl;
   // login fields
   loginEmail = '';
   loginPassword = '';
@@ -40,7 +41,6 @@ export class AuthComponent {
   otpLoading = false;
   signupLoading = false;
   //#endregion [variables]
-    private apiUrl = environment.apiBaseUrl;
   constructor(private http: HttpClient, private router: Router, private wizardState: WizardStateService) {}
 
   login() {

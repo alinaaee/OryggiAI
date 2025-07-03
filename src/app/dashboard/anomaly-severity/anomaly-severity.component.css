@@ -1,0 +1,12 @@
+.chart-container {
+    width: 100%;
+    height: calc(100% - 40px); 
+    max-height: 370px;
+    overflow: auto;
+    position: relative;
+}
+
+apx-chart {
+    width: 100% !important;
+    height: 100% !important;
+}

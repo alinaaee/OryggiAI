@@ -1,22 +1,41 @@
-<app-header></app-header>
+<div class="d-flex p-3">
+    <img [src]="logo" alt="Oryggi Logo" style="width: 130px;" />
+</div>
 <div class="d-flex flex-column min-vh-100">
     <div class="overflow-auto px-4 pt-2">
-        <mat-horizontal-stepper linear>
-        <mat-step label="Organization Basics">
-            <app-organisation-basics #orgBasics></app-organisation-basics>
-        </mat-step>
-        <mat-step label="Technology Infrastructure">
-            <app-technology-infrastructure #techInfra></app-technology-infrastructure>
-        </mat-step>
-        <mat-step label="Work Hours and Shift">
-            <app-work-hours #workHours></app-work-hours>
-        </mat-step>
-        <mat-step label="Access and Log Details">
-            <app-access-and-logging #logs></app-access-and-logging>
-        </mat-step>
+        <mat-horizontal-stepper #stepper linear>
+            <mat-step label="Organization Basics">
+                <h3 class="NeuLight pt-4">Organization Basics</h3>
+                <p class="mb-5">Tell us about your organization details.</p>
+                <app-question-form *ngIf="forms['OrgBasics']" [questions]="getActiveQuestions('OrgBasics')" [form]="forms['OrgBasics']"></app-question-form>
+            </mat-step>
+            <mat-step label="Technology Infrastructure">
+                <h3 class="NeuLight pt-4">Technology Infrastructure</h3>
+                <p class="mb-5">Describe your technology infrastructure setup.</p>
+                <app-question-form *ngIf="forms['Tech']" [questions]="getActiveQuestions('Tech')" [form]="forms['Tech']"></app-question-form>
+            </mat-step>
+            <mat-step label="Work Hours and Shift">
+                <h3 class="NeuLight pt-4">Work Hours and Shift</h3>
+                <p class="mb-5">Tell us about your working hours and shifts if any.</p>
+                <app-question-form *ngIf="forms['Hours']" [questions]="getActiveQuestions('Hours')" [form]="forms['Hours']"></app-question-form>
+                <button mat-flat-button class="bg-dark" (click)="openShiftModal()" *ngIf="hiddenShiftQuestionID">
+                    Add Shifts
+                </button>
+            </mat-step>
+            <mat-step label="Access and Log Details">
+                <h3 class="NeuLight pt-4">Access and Log Details</h3>
+                <p class="mb-5">Provide details about access and logging policies.</p>
+                <app-question-form *ngIf="forms['Logs']" [questions]="getActiveQuestions('Logs')" [form]="forms['Logs']"></app-question-form>
+            </mat-step>
         </mat-horizontal-stepper>
     </div>
-    <div class="p-4 text-end">
-        <button class="btn btn-dark custom-btn" (click)="saveAll()">SAVE</button>
+    <div class="d-flex p-4 justify-content-between">
+        <button mat-stroked-button class="btn custom-btn p-4" (click)="previousStep()" [disabled]="stepper.selectedIndex === 0">
+            Previous
+        </button>
+        <div class="text-end">
+            <button mat-stroked-button class="btn custom-btn p-4" (click)="nextStep()">Next</button>
+            <button class="btn btn-dark custom-btn" (click)="saveAll()">SAVE</button>
+        </div>
     </div>
 </div>

@@ -30,7 +30,7 @@ h1,h2,h3,h4,h5,p,span{
 
 h1,h2,h3,h4,h5,h6,p,span {
   &.NeuRegular{
-      font-family: 'NeueMachina-Regular' !important;
+    font-family: 'NeueMachina-Regular' !important;
   }
 } 
 
@@ -38,11 +38,11 @@ h1,h2,h3,h4,h5,h6,p,span {
 
 /* GLOBAL STYLES */
 .custom-btn {
-    border-radius: 2rem !important;
-    padding: 0.8rem 3rem !important;
-    font-weight: 400 !important;
-    text-transform: none !important; 
-    margin-left: 0.5rem !important; 
+  border-radius: 2rem !important;
+  padding: 0.8rem 3rem !important;
+  font-weight: 400 !important;
+  text-transform: none !important; 
+  margin-left: 0.5rem !important; 
 }
 
 .custom-btn-lg {
@@ -97,9 +97,7 @@ h2 {
   display: block;
 }
 
-.input-field,
-.select-field,
-.slider-field {
+.input-field, .select-field, .slider-field {
   width: 100%;
   padding: 12px;
   margin-bottom: 20px;
@@ -146,43 +144,56 @@ button:hover {
 }
 
 .back-icon{
-    background-color: #E7E7E7;
-    border-radius: 50%;
-    &:hover{
-        transition: all 0.3s ease-in-out;
-        transform: scale(1.2); 
-    }
+  background-color: #E7E7E7;
+  border-radius: 50%;
+  &:hover{
+      transition: all 0.3s ease-in-out;
+      transform: scale(1.2); 
+  }
 }
 
 
 /* CLASSES FOR CHIPS BEING SHOWN IN GRID */
 .severity-chip {
-    padding: 0px 10px;
-    border-radius: 16px;
-    display: inline-block;
-    font-size: 0.85rem;
-    font-weight: 500;
-    text-transform: capitalize;
-    color: #fff;
+  padding: 0px 10px;
+  border-radius: 16px;
+  display: inline-block;
+  font-size: 0.85rem;
+  font-weight: 500;
+  text-transform: capitalize;
+  color: #fff;
 }
 
 .severity-chip.critical {
-    background-color: #dc3545; /* Red */
+  background-color: #dc3545; 
 }
 
 .severity-chip.high {
-    background-color: #ffc107; /* Yellow */
-    color: #000;
+  background-color: #ffc107; 
+  color: #000;
 }
 
 .severity-chip.medium {
-    background-color: #17a2b8; /* Teal/Blue */
+  background-color: #17a2b8; 
 }
 
 .severity-chip.low {
-     background-color: #28a745; /* Green */
+  background-color: #28a745;
 }
 
 .severity-chip.default {
-     background-color: #6c757d; /* Grey */
+  background-color: #6c757d; 
+}
+
+/* CLASSES FOR DIFFERENT MATERIAL DIALOGS */
+
+.fullscreen-dialog {
+  width: 1300px !important;
+  max-width: 1500px !important;
+}
+
+.md-screen-dialog {
+  width: 750px !important;
+  max-width: 800px !important;
+  height: 500px !important;
 }

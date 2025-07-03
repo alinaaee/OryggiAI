@@ -5,6 +5,8 @@ export interface AnswerDto {
 
 
 export interface QuestionDto {
+  pageKey: string;    
+  isActive: boolean;  
   checkboxLabel: any;
   answerMasters: any;
   questionID:   string;
@@ -13,7 +15,6 @@ export interface QuestionDto {
   sortOrder: number;
   answers: AnswerDto[];
   required?: boolean;   
-//answers?: Array<AnswerDto>; // For select input, contains possible answers
   minValue?: number;    
   maxValue?: number;    
   step?: number; 
