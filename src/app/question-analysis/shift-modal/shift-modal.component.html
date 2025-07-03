@@ -6,18 +6,14 @@
             <input matInput [(ngModel)]="shiftName">
         </mat-form-field>
     </div>
-    <div class="row">
-        <div class="col-md-6">
-            <mat-form-field appearance="outline" class="w-100 mb-2">
-                <mat-label>Start Time</mat-label>
-                <input matInput type="time" [(ngModel)]="startTime">
-            </mat-form-field>
+    <div class="d-flex justify-content-around">
+        <div class="d-flex align-items-center">
+            <p class="m-0 me-3">Shift Start Time</p>
+            <ngb-timepicker [(ngModel)]="startTime"></ngb-timepicker>
         </div>
-        <div class="col-md-6">
-            <mat-form-field appearance="outline" class="w-100"> 
-                <mat-label>End Time</mat-label>
-                <input matInput type="time" [(ngModel)]="endTime">
-            </mat-form-field>
+        <div class="d-flex align-items-center">
+            <p class="m-0 me-3">Shift End Time</p>
+            <ngb-timepicker [(ngModel)]="endTime"></ngb-timepicker>
         </div>
     </div>
     <button mat-mini-fab (click)="addShift()" [disabled]="!shiftName || !startTime || !endTime">
@@ -30,11 +26,11 @@
         </ng-container>
         <ng-container matColumnDef="start">
             <th mat-header-cell *matHeaderCellDef> Shift Start Time </th>
-            <td mat-cell *matCellDef="let shift"> {{shift.start}} </td>
+            <td mat-cell *matCellDef="let shift"> {{ this.utilService.formatTime(shift.start) }} </td>
         </ng-container>
         <ng-container matColumnDef="end">
             <th mat-header-cell *matHeaderCellDef> Shift End Time </th>
-            <td mat-cell *matCellDef="let shift"> {{shift.end}} </td>
+            <td mat-cell *matCellDef="let shift"> {{ this.utilService.formatTime(shift.end) }} </td>
         </ng-container>
         <ng-container matColumnDef="actions">
             <th mat-header-cell *matHeaderCellDef> Actions </th>
