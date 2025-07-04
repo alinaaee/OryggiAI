@@ -1,10 +1,15 @@
+//ANGULAR IMPORTS
 import { Component, Input } from '@angular/core';
+
+//MATERIAL IMPORTS
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatIconModule } from '@angular/material/icon';
 import { MatSelectModule } from '@angular/material/select';
+import {MatChipsModule} from '@angular/material/chips';
+
+//AG-GRID IMPORTS
 import { AgGridAngular }    from 'ag-grid-angular';
 import { ColDef, GridOptions, ICellRendererParams } from 'ag-grid-community';
-import {MatChipsModule} from '@angular/material/chips';
 
 @Component({
   selector: 'app-recent-anomalies',

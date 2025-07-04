@@ -1,15 +1,17 @@
-// src/app/auth/auth.component.ts
+//ANGULAR IMPORTS
 import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormBuilder, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
-import { HttpClient, HttpClientModule } from '@angular/common/http';
 import { Router, RouterModule } from '@angular/router';
-import { environment } from '../../environments/environment';
+
+//ANGULAR MATERIAL IMPORTS
 import { MatFormFieldModule, MatLabel } from '@angular/material/form-field';
 import { MatIconModule } from '@angular/material/icon';
 import { MatInputModule } from '@angular/material/input';
 import { MatButtonModule } from '@angular/material/button';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
+
+//LOCAL IMPORTS
 import { NavigationStateService } from '../navigation-state.service';
 import { OryggiAiService } from '../oryggi-ai.service';
 import { UtilityService } from '../utility.service';
@@ -18,7 +20,7 @@ import { UtilityService } from '../utility.service';
 @Component({
   selector: 'app-auth',
   standalone: true,
-  imports: [ CommonModule, FormsModule, HttpClientModule, RouterModule, MatFormFieldModule, MatIconModule, MatInputModule, MatLabel, MatButtonModule, MatProgressSpinnerModule, ReactiveFormsModule ],
+  imports: [ CommonModule, FormsModule, RouterModule, MatFormFieldModule, MatIconModule, MatInputModule, MatLabel, MatButtonModule, MatProgressSpinnerModule, ReactiveFormsModule ],
   templateUrl: './auth.component.html',
   styleUrls: ['./auth.component.css']
 })
