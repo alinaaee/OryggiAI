@@ -7,19 +7,17 @@ import {
   HttpEvent
 } from '@angular/common/http';
 import { Observable } from 'rxjs';
-import { WizardStateService } from '../services/wizard-state.service';
 
 @Injectable()
 export class AuthInterceptor implements HttpInterceptor {
-  constructor(private wizardState: WizardStateService) {}
+  constructor() {}
 
   intercept(
     req: HttpRequest<unknown>,
     next: HttpHandler
   ): Observable<HttpEvent<unknown>> {
     const token  = localStorage.getItem('token');
-    const tenant = this.wizardState.getTenantId() 
-                || localStorage.getItem('tenantId');
+    const tenant = localStorage.getItem('tenantId');
 
     // If neither token nor tenant, just forward the original request
     if (!token && !tenant) {

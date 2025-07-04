@@ -4,7 +4,6 @@ import { CommonModule } from '@angular/common';
 import { FormBuilder, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
 import { HttpClient, HttpClientModule } from '@angular/common/http';
 import { Router, RouterModule } from '@angular/router';
-import { WizardStateService } from '../services/wizard-state.service';
 import { environment } from '../../environments/environment';
 import { MatFormFieldModule, MatLabel } from '@angular/material/form-field';
 import { MatIconModule } from '@angular/material/icon';
@@ -46,7 +45,7 @@ export class AuthComponent {
 
   //#endregion [variables]
 
-  constructor( private fb: FormBuilder, private aiService: OryggiAiService, private router: Router, private wizardState: WizardStateService, private navStateService: NavigationStateService, public utilService: UtilityService ) {
+  constructor( private fb: FormBuilder, private aiService: OryggiAiService, private router: Router, private navStateService: NavigationStateService, public utilService: UtilityService ) {
     this.initializeForms();
   }
 
@@ -107,7 +106,6 @@ export class AuthComponent {
     this.aiService.verifyOtp(requestData).subscribe({
       next: ({ token, tenantId }) => {
         this.storeSession(token, tenantId);
-        this.wizardState.setTenantId(tenantId.toString());
         this.navStateService.setAllowed(true);
         this.router.navigate(['/questions']);
       },
