@@ -13,13 +13,13 @@ import { MatDialog } from '@angular/material/dialog';
 
 //OTHER COMPONENTS AND SERVICES
 import Swal from 'sweetalert2';
-import { QuestionService } from '../services/question.service';
 import { ErrorLoggerService } from '../services/error-logger.service';
 import { QuestionFormComponent } from './question-form/question-form.component';
 import { QuestionDto } from '../models/question.model';
 import { ShiftModalComponent } from './shift-modal/shift-modal.component';
 import { PAGE_KEYS } from '../generic classes/page-keys';
 import { NavigationStateService } from '../navigation-state.service';
+import { OryggiAiService } from '../oryggi-ai.service';
 
 @Component({
   selector: 'app-question-analysis',
@@ -28,7 +28,7 @@ import { NavigationStateService } from '../navigation-state.service';
   styleUrl: './question-analysis.component.css'
 })
 export class QuestionAnalysisComponent {
-  constructor( private fb: FormBuilder, private questionService: QuestionService, private snackBar: MatSnackBar, private router: Router, private errorLog: ErrorLoggerService, private dialog: MatDialog, private navStateService: NavigationStateService) {}
+  constructor( private fb: FormBuilder, private aiService: OryggiAiService, private snackBar: MatSnackBar, private router: Router, private errorLog: ErrorLoggerService, private dialog: MatDialog, private navStateService: NavigationStateService) {}
   
   //#region [Variables]
     logo: string = 'assets/Logo/logo-Oryggi.png';
@@ -45,7 +45,7 @@ export class QuestionAnalysisComponent {
   }
 
   loadQuestions(){
-    this.questionService.getAllQuestions().subscribe({
+    this.aiService.getAllQuestions().subscribe({
       next: (questions) => {
         this.allQuestions = questions;
         this.pageWiseQuestions = questions.reduce((acc, q) => {
@@ -131,7 +131,7 @@ export class QuestionAnalysisComponent {
     }).then((result) => {
       if (result.isConfirmed) {
         const requests = Object.entries(allAnswers).map(([pageKey, answers]) =>
-          this.questionService.saveAnswers(pageKey, answers)
+          this.aiService.saveAnswers(pageKey, answers)
         );
 
         forkJoin(requests).subscribe({

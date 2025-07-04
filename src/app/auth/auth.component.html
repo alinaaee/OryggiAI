@@ -9,16 +9,19 @@
         <h1 class="NeuBold">Oryggi AiXpert</h1>
       </div>
       <p class="text-muted mb-4">Please sign in to your account</p>
-      <form *ngIf="mode === 'login'" (ngSubmit)="login()" #loginForm="ngForm" class="w-75">
+      <form *ngIf="mode === 'login'" [formGroup]="loginForm" (ngSubmit)="login()" class="w-75">
         <mat-form-field appearance="outline" class="w-100 mb-3">
           <mat-label>Email</mat-label>
-          <input matInput type="email" required [(ngModel)]="loginEmail" name="loginEmail">
+          <input matInput type="email" formControlName="email" />
+          <mat-error *ngIf="loginForm.get('email')?.hasError('required')">Email is required</mat-error>
+          <mat-error *ngIf="loginForm.get('email')?.hasError('pattern')">Enter a valid email</mat-error>
         </mat-form-field>
         <mat-form-field appearance="outline" class="w-100 mb-3">
           <mat-label>Password</mat-label>
-          <input matInput type="password" required [(ngModel)]="loginPassword" name="loginPassword">
+          <input matInput type="password" formControlName="password" />
+          <mat-error *ngIf="loginForm.get('password')?.hasError('required')">Password is required</mat-error>
         </mat-form-field>
-        <button mat-flat-button class="custom-btn-lg w-100 mb-3" type="submit" [disabled]="!loginForm.form.valid || loading">
+        <button mat-flat-button class="custom-btn-lg w-100 mb-3" type="submit" [disabled]="loginForm.invalid || loading">
           <mat-progress-spinner *ngIf="loading" mode="indeterminate" diameter="20"></mat-progress-spinner>
           <span *ngIf="!loading">LOGIN</span>
         </button>
@@ -27,39 +30,50 @@
         </div>
         <p *ngIf="loginMessage" class="text-danger mt-2">{{ loginMessage }}</p>
       </form>
-      <form *ngIf="mode === 'signup'" (ngSubmit)="signup()" #signupForm="ngForm" class="w-75">
+      <form *ngIf="mode === 'signup'" [formGroup]="signupForm" (ngSubmit)="signup()" class="w-75">
         <mat-form-field appearance="outline" class="w-100 mb-3">
           <mat-label>Email Address</mat-label>
-          <input matInput type="email" required [(ngModel)]="signupEmail" name="signupEmail">
+          <input matInput type="email" formControlName="email" />
+          <mat-error *ngIf="signupForm.get('email')?.hasError('required')">Email is required</mat-error>
+          <mat-error *ngIf="signupForm.get('email')?.hasError('pattern')">Enter a valid email</mat-error>
         </mat-form-field>
+
         <mat-form-field appearance="outline" class="w-100 mb-3">
           <mat-label>Company Name</mat-label>
-          <input matInput type="text" required [(ngModel)]="signupCompany" name="signupCompany">
+          <input matInput type="text" formControlName="companyName" />
+          <mat-error *ngIf="signupForm.get('companyName')?.hasError('required')">Company name is required</mat-error>
         </mat-form-field>
+
         <mat-form-field appearance="outline" class="w-100 mb-3">
           <mat-label>Password</mat-label>
-          <input matInput type="password" required [(ngModel)]="signupPassword" name="signupPassword">
+          <input matInput type="password" formControlName="password" />
+          <mat-error *ngIf="signupForm.get('password')?.hasError('required')">Password is required</mat-error>
         </mat-form-field>
-        <button mat-flat-button class="custom-btn-lg w-100 mb-3" type="submit" [disabled]="!signupForm.form.valid || signupLoading">
+
+        <button mat-flat-button class="custom-btn-lg w-100 mb-3" type="submit" [disabled]="signupForm.invalid || signupLoading">
           <mat-progress-spinner *ngIf="signupLoading" mode="indeterminate" diameter="20"></mat-progress-spinner>
           <span *ngIf="!signupLoading">Signup</span>
         </button>
+
         <div class="d-flex justify-content-end">
           <a (click)="mode = 'login'" class="text-body-secondary" style="cursor:pointer;">Already a member? Login</a>
         </div>
+
         <p *ngIf="signupMessage" class="text-danger mt-2">{{ signupMessage }}</p>
       </form>
-      <form *ngIf="mode === 'verifyOtp'" (ngSubmit)="verifyOtp()" #otpForm="ngForm" class="w-75">
+      <form *ngIf="mode === 'verifyOtp'" [formGroup]="otpForm" (ngSubmit)="verifyOtp()" class="w-75">
         <h3>Verify OTP</h3>
-        <p>OTP sent to: <strong>{{ signupEmail }}</strong></p>
+        <p>OTP sent to: <strong>{{ signupForm.get('email')?.value }}</strong></p>
         <mat-form-field appearance="outline" class="w-100 mb-3">
           <mat-label>Enter OTP</mat-label>
-          <input matInput type="text" required [(ngModel)]="otp" name="otp">
+          <input matInput maxlength="6" formControlName="otp"/>
+          <mat-error *ngIf="otpForm.get('otp')?.hasError('required')">OTP is required</mat-error>
+          <mat-error *ngIf="otpForm.get('otp')?.hasError('pattern')">OTP must be 6 digits</mat-error>
         </mat-form-field>
-        <button mat-flat-button class="custom-btn-lg w-100 mb-3" type="submit" [disabled]="!otpForm.form.valid || otpLoading">
+        <button mat-flat-button class="custom-btn-lg w-100 mb-3" type="submit" [disabled]="otpForm.invalid || otpLoading">
           <mat-progress-spinner *ngIf="otpLoading" mode="indeterminate" diameter="20"></mat-progress-spinner>
           <span *ngIf="!otpLoading">Verify OTP</span>
-        </button>
+        </button> 
         <p *ngIf="verifyMessage" class="text-danger mt-2">{{ verifyMessage }}</p>
       </form>
     </div>

@@ -1,7 +1,7 @@
 import { Component } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import { LogOutComponent } from "../log-out/log-out.component";
-import { DashboardService } from '../../services/dashboard.service';
+import { OryggiAiService } from '../../oryggi-ai.service';
 
 @Component({
   selector: 'app-header',
@@ -10,7 +10,7 @@ import { DashboardService } from '../../services/dashboard.service';
   styleUrl: './header.component.css'
 })
 export class HeaderComponent {
-  constructor(private dashboardService: DashboardService) {}
+  constructor(private aiService: OryggiAiService) {}
   
   logo: string = 'assets/Logo/logo-Oryggi.png';
   image: string = 'assets/Profiles/avtar.jpeg';
@@ -21,7 +21,7 @@ export class HeaderComponent {
   }
 
   getCompanyName() {
-    this.companyName = this.dashboardService.companyName;
+    this.companyName = this.aiService.companyName;
   }
 
 }

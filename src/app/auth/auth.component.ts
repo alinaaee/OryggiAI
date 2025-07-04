@@ -1,7 +1,7 @@
 // src/app/auth/auth.component.ts
 import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { FormsModule } from '@angular/forms';
+import { FormBuilder, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
 import { HttpClient, HttpClientModule } from '@angular/common/http';
 import { Router, RouterModule } from '@angular/router';
 import { WizardStateService } from '../services/wizard-state.service';
@@ -12,102 +12,114 @@ import { MatInputModule } from '@angular/material/input';
 import { MatButtonModule } from '@angular/material/button';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { NavigationStateService } from '../navigation-state.service';
+import { OryggiAiService } from '../oryggi-ai.service';
+import { UtilityService } from '../utility.service';
 
 
 @Component({
   selector: 'app-auth',
   standalone: true,
-  imports: [ CommonModule, FormsModule, HttpClientModule, RouterModule, MatFormFieldModule, MatIconModule, MatInputModule, MatLabel, MatButtonModule, MatProgressSpinnerModule ],
+  imports: [ CommonModule, FormsModule, HttpClientModule, RouterModule, MatFormFieldModule, MatIconModule, MatInputModule, MatLabel, MatButtonModule, MatProgressSpinnerModule, ReactiveFormsModule ],
   templateUrl: './auth.component.html',
   styleUrls: ['./auth.component.css']
 })
 export class AuthComponent {
-  //#region [variables]
-  logo: string = 'assets/Logo/logo-Oryggi.png';
-  mode: 'login' | 'signup' | 'verifyOtp' = 'login';
-  private apiUrl = environment.apiBaseUrl;
-  // login fields
-  loginEmail = '';
-  loginPassword = '';
-  loginMessage = '';
-  // signup fields
-  signupEmail = '';
-  signupCompany = '';
-  signupPassword = '';
-  signupMessage = '';
-  // otp field
-  otp = '';
-  verifyMessage = '';
-  loading = false;
-  otpLoading = false;
-  signupLoading = false;
-  //#endregion [variables]
-  constructor(private http: HttpClient, private router: Router, private wizardState: WizardStateService, private navStateService: NavigationStateService) {}
 
-  login() {
-    this.loginMessage = '';
+  //#region [variables]
+  logo = 'assets/Logo/logo-Oryggi.png';
+  mode: 'login' | 'signup' | 'verifyOtp' = 'login';
+
+  readonly emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/;
+  readonly otpPattern = /^[0-9]{6}$/;
+
+  loginForm!: FormGroup;
+  signupForm!: FormGroup;
+  otpForm!: FormGroup;
+
+  loginMessage = '';
+  signupMessage = '';
+  verifyMessage = '';
+
+  loading = false;
+  signupLoading = false;
+  otpLoading = false;
+
+  //#endregion [variables]
+
+  constructor( private fb: FormBuilder, private aiService: OryggiAiService, private router: Router, private wizardState: WizardStateService, private navStateService: NavigationStateService, public utilService: UtilityService ) {
+    this.initializeForms();
+  }
+
+  initializeForms(){
+    this.loginForm = this.fb.group({
+      email: ['', [Validators.required, Validators.pattern(this.emailPattern)]],
+      password: ['', Validators.required],
+    });
+    this.signupForm = this.fb.group({
+      email: ['', [Validators.required, Validators.pattern(this.emailPattern)]],
+      companyName: ['', Validators.required],
+      password: ['', Validators.required],
+    });
+    this.otpForm = this.fb.group({
+      otp: ['', [Validators.required, Validators.pattern(this.otpPattern)]],
+    });
+  }
+
+  login(): void {
+    if (this.loginForm.invalid) return;
     this.loading = true;
-    this.http.post<{ token: string; tenantId: number }>( `${this.apiUrl}Tenant_/login`, {
-      email: this.loginEmail,
-      password: this.loginPassword
-    }).subscribe({
-      next: res => {
-        localStorage.setItem('token', res.token);
-        localStorage.setItem('tenantId', res.tenantId.toString());
+    this.loginMessage = '';
+    this.aiService.login(this.loginForm.value).subscribe({
+      next: ({ token, tenantId }) => {
+        this.storeSession(token, tenantId);
         this.navStateService.setAllowed(true);
         this.router.navigate(['/dashboard']);
-        this.loading = false;
       },
-      error: err => {
+      error: (err) => {
         this.loginMessage = err.error?.message || 'Login failed';
-        this.loading = false;
-      }
-    });
-  }
-
-
-  signup() {
-    this.signupMessage = '';
-    this.signupLoading = true;
-    this.http.post<{ message: string }>(this.apiUrl +'Tenant_/signup', {
-      email: this.signupEmail,
-      companyName: this.signupCompany,
-      password: this.signupPassword
-    }).subscribe({
-      next: res => {
-        this.signupMessage = res.message;
-        this.mode = 'verifyOtp';
-        this.signupLoading = false;
       },
-      error: err => {
-        this.signupMessage = err.error?.message || 'Signup failed';
-        this.signupLoading = false; 
-      }
+      complete: () => (this.loading = false),
     });
   }
 
-  verifyOtp() {
-    this.verifyMessage = '';
+  signup(): void {
+    if (this.signupForm.invalid) return;
+    this.signupLoading = true;
+    this.signupMessage = '';
+    this.aiService.signup(this.signupForm.value).subscribe({
+      next: ({ message }) => {
+        this.signupMessage = message;
+        this.mode = 'verifyOtp';
+      },
+      error: (err) => {
+        this.signupMessage = err.error?.message || 'Signup failed';
+      },
+      complete: () => (this.signupLoading = false),
+    });
+  }
+
+  verifyOtp(): void {
+    if (this.otpForm.invalid) return;
     this.otpLoading = true;
-    this.http.post<{ token: string; tenantId: number; message: string }>(this.apiUrl +'Tenant_/verify-otp', {
-      email: this.signupEmail,
-      companyName: this.signupCompany,
-      password: this.signupPassword,
-      otp: this.otp
-    }).subscribe({
-      next: res => {
-        localStorage.setItem('token', res.token);
-        localStorage.setItem('tenantId', res.tenantId.toString());
-        this.wizardState.setTenantId(res.tenantId.toString());
+    this.verifyMessage = '';
+    const requestData = { ...this.signupForm.value, otp: this.otpForm.value.otp };
+
+    this.aiService.verifyOtp(requestData).subscribe({
+      next: ({ token, tenantId }) => {
+        this.storeSession(token, tenantId);
+        this.wizardState.setTenantId(tenantId.toString());
         this.navStateService.setAllowed(true);
         this.router.navigate(['/questions']);
-        this.otpLoading = false; 
       },
-      error: err => {
+      error: (err) => {
         this.verifyMessage = err.error?.message || 'OTP verification failed';
-        this.otpLoading = false; 
-      }
+      },
+      complete: () => (this.otpLoading = false),
     });
   }
 
+  private storeSession(token: string, tenantId: number): void {
+    localStorage.setItem('token', token);
+    localStorage.setItem('tenantId', tenantId.toString());
+  }
 }

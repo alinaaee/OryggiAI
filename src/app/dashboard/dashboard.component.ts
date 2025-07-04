@@ -13,8 +13,8 @@ import { HeaderComponent }    from '../common/header/header.component';
 import { AnomalySeverityComponent } from "./anomaly-severity/anomaly-severity.component";
 import { DeviceWiseSeverityComponent } from "./device-wise-severity/device-wise-severity.component";
 import { TypeWiseSeverityComponent } from "./anomaly-severity/type-wise-severity/type-wise-severity.component";
-import { DashboardService } from '../services/dashboard.service';
 import { UtilityService } from '../utility.service';
+import { OryggiAiService } from '../oryggi-ai.service';
 
 @Component({
   selector: 'app-dashboard',
@@ -24,7 +24,7 @@ import { UtilityService } from '../utility.service';
   styleUrls: ['./dashboard.component.css']
 })
 export class DashboardComponent implements OnInit {
-  constructor(private dashboardService: DashboardService, private utilService: UtilityService) {}
+  constructor( private aiService: OryggiAiService, private utilService: UtilityService) {}
 
   //#region [Variables]
     latestDate = '';
@@ -48,7 +48,7 @@ export class DashboardComponent implements OnInit {
   }
 
   getLatestAIResponse(){
-    this.dashboardService.getLatestAiResponse().subscribe({
+    this.aiService.getLatestAiResponse().subscribe({
       next: (response) => {
         const { aiResponse } = response || {};  
         if (!aiResponse) return;
@@ -65,7 +65,7 @@ export class DashboardComponent implements OnInit {
         this.systemHealth = parsed.systemHealth || 0;
         this.anomalies = parsed.anomalies || [];
         if (parsed.companyName) {
-          this.dashboardService.companyName = parsed.companyName;
+          this.aiService.companyName = parsed.companyName;
           this.companyName.getCompanyName();
         } 
 
@@ -98,7 +98,7 @@ export class DashboardComponent implements OnInit {
   }
 
   getPreviousDayStats(prevDate: string) {
-    this.dashboardService.getAiResponsesByDate(prevDate).subscribe({
+    this.aiService.getAiResponsesByDate(prevDate).subscribe({
       next: (response) => {
         const { aiResponse } = response || {};
         if (!aiResponse) return;

@@ -15,11 +15,13 @@ export class UtilityService {
     }
   }
   
+  //#region [Format method]
   formatTime(time: { hour: number; minute: number }): string {
     if (!time) return '--:--';
     const hh = time.hour < 10 ? '0' + time.hour : time.hour;
     const mm = time.minute < 10 ? '0' + time.minute : time.minute;
     return `${hh}:${mm}`;
   }
+  //#endregion [Format method]
 
 }
