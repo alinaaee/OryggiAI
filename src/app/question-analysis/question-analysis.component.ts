@@ -19,6 +19,7 @@ import { QuestionFormComponent } from './question-form/question-form.component';
 import { QuestionDto } from '../models/question.model';
 import { ShiftModalComponent } from './shift-modal/shift-modal.component';
 import { PAGE_KEYS } from '../generic classes/page-keys';
+import { NavigationStateService } from '../navigation-state.service';
 
 @Component({
   selector: 'app-question-analysis',
@@ -27,7 +28,7 @@ import { PAGE_KEYS } from '../generic classes/page-keys';
   styleUrl: './question-analysis.component.css'
 })
 export class QuestionAnalysisComponent {
-  constructor( private fb: FormBuilder, private questionService: QuestionService, private snackBar: MatSnackBar, private router: Router, private errorLog: ErrorLoggerService, private dialog: MatDialog) {}
+  constructor( private fb: FormBuilder, private questionService: QuestionService, private snackBar: MatSnackBar, private router: Router, private errorLog: ErrorLoggerService, private dialog: MatDialog, private navStateService: NavigationStateService) {}
   
   //#region [Variables]
     logo: string = 'assets/Logo/logo-Oryggi.png';
@@ -136,6 +137,7 @@ export class QuestionAnalysisComponent {
         forkJoin(requests).subscribe({
           next: () => {
             this.snackBar.open('All answers have been saved.', 'Close', { duration: 3000 });
+            this.navStateService.setAllowed(true);
             this.router.navigate(['/dashboard']);
           },
           error: (err) => this.errorLog.logError(err)

@@ -11,6 +11,7 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatInputModule } from '@angular/material/input';
 import { MatButtonModule } from '@angular/material/button';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
+import { NavigationStateService } from '../navigation-state.service';
 
 
 @Component({
@@ -41,7 +42,7 @@ export class AuthComponent {
   otpLoading = false;
   signupLoading = false;
   //#endregion [variables]
-  constructor(private http: HttpClient, private router: Router, private wizardState: WizardStateService) {}
+  constructor(private http: HttpClient, private router: Router, private wizardState: WizardStateService, private navStateService: NavigationStateService) {}
 
   login() {
     this.loginMessage = '';
@@ -53,6 +54,7 @@ export class AuthComponent {
       next: res => {
         localStorage.setItem('token', res.token);
         localStorage.setItem('tenantId', res.tenantId.toString());
+        this.navStateService.setAllowed(true);
         this.router.navigate(['/dashboard']);
         this.loading = false;
       },
@@ -97,6 +99,7 @@ export class AuthComponent {
         localStorage.setItem('token', res.token);
         localStorage.setItem('tenantId', res.tenantId.toString());
         this.wizardState.setTenantId(res.tenantId.toString());
+        this.navStateService.setAllowed(true);
         this.router.navigate(['/questions']);
         this.otpLoading = false; 
       },
